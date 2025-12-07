@@ -29,8 +29,8 @@ const SLIDES_DATA = {
             {
               "icon": "📅",
               "iconColor": "purple",
-              "title": "Date",
-              "content": "December 2025"
+              "title": "Team Members",
+              "content": "Lê Đức Phương<br> Đạt<br> An<br> Thành"
             }
           ]
         },
