@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdaGrad Algorithm - Slide Presentation</title>
+    <link rel="stylesheet" href="present/style.css">
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <!-- KaTeX JS -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .slide {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            padding: 1.5rem 3rem;
+            overflow-y: auto;
+            animation: fadeIn 0.5s ease-in;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slide-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        
+        .slide-content {
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            font-size: 1rem;
+            line-height: 1.5;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 0.75rem;
+        }
+        
+        .navigation {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 1001;
+        }
+        
+        .nav-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        
+        .nav-btn:hover {
+            background: var(--color-secondary);
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .slide-counter {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-full);
+            box-shadow: 0 2px 8px var(--color-card-shadow);
+            font-weight: 600;
+            z-index: 1001;
+        }
+        
+        .math-block {
+            background: #f8f9fa;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            margin: 0.75rem 0;
+            border-left: 4px solid var(--color-primary);
+        }
+        
+        .highlight-box {
+            background: var(--color-yellow);
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            margin: 0.75rem 0;
+            border-left: 4px solid var(--color-warning);
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: white;
+            padding: 1.25rem;
+            border-radius: var(--radius-md);
+            text-align: center;
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+        
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        li {
+            margin-bottom: 0.4rem;
+        }
+        
+        h3 {
+            color: var(--color-primary);
+            margin: 1rem 0 0.5rem;
+            font-size: 1.3rem;
+        }
+        
+        p {
+            margin-bottom: 0.75rem;
+        }
+
+        /* Đảm bảo scrollbar ẩn nhưng vẫn scroll được */
+        .slide::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .slide::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .slide::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-counter">
+        <span id="currentSlide">1</span> / <span id="totalSlides">0</span>
+    </div>
+
+    <div id="slidesContainer"></div>
+
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="previousSlide()">← Previous</button>
+        <button class="nav-btn" id="nextBtn" onclick="nextSlide()">Next →</button>
+    </div>
+
+    <script src="slides-data.js"></script>
+    <script>
+        let currentSlideIndex = 0;
+        
+        function renderSlides() {
+            const container = document.getElementById('slidesContainer');
+            container.innerHTML = '';
+            
+            slides.forEach((slide, index) => {
+                const slideDiv = document.createElement('div');
+                slideDiv.className = 'slide' + (index === 0 ? ' active' : '');
+                slideDiv.innerHTML = `
+                    <div class="slide-content">
+                        ${slide.title ? `<h1 class="slide-title">${slide.title}</h1>` : ''}
+                        ${slide.content}
+                    </div>
+                `;
+                container.appendChild(slideDiv);
+            });
+            
+            document.getElementById('totalSlides').textContent = slides.length;
+            updateNavigation();
+            
+            // Render math with KaTeX
+            setTimeout(() => {
+                if (typeof renderMathInElement !== 'undefined') {
+                    renderMathInElement(document.body, {
+                        delimiters: [
+                            {left: '$$', right: '$$', display: true},
+                            {left: '$', right: '$', display: false}
+                        ],
+                        throwOnError: false
+                    });
+                }
+            }, 100);
+        }
+        
+        function updateNavigation() {
+            document.getElementById('currentSlide').textContent = currentSlideIndex + 1;
+            document.getElementById('prevBtn').disabled = currentSlideIndex === 0;
+            document.getElementById('nextBtn').disabled = currentSlideIndex === slides.length - 1;
+        }
+        
+        function showSlide(index) {
+            const slideElements = document.querySelectorAll('.slide');
+            slideElements.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            currentSlideIndex = index;
+            updateNavigation();
+            
+            // Re-render math for active slide with KaTeX
+            const activeSlide = document.querySelector('.slide.active');
+            if (activeSlide && typeof renderMathInElement !== 'undefined') {
+                renderMathInElement(activeSlide, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false}
+                    ],
+                    throwOnError: false
+                });
+            }
+        }
+        
+        function nextSlide() {
+            if (currentSlideIndex < slides.length - 1) {
+                showSlide(currentSlideIndex + 1);
+            }
+        }
+        
+        function previousSlide() {
+            if (currentSlideIndex > 0) {
+                showSlide(currentSlideIndex - 1);
+            }
+        }
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') previousSlide();
+        });
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            renderSlides();
+        });
+    </script>
+</body>
+</html>
