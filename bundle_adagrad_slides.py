@@ -102,6 +102,7 @@ def bundle_adagrad_slides():
     base_dir = Path(__file__).parent
     html_file = base_dir / 'Math4CS_AdaGrad_slides.html'
     slides_data_file = base_dir / 'slides-data.js'
+    css_file = base_dir / 'style.css'
     output_file = base_dir / 'index.html'
     
     # Check if files exist
@@ -113,10 +114,25 @@ def bundle_adagrad_slides():
         print(f"❌ Error: {slides_data_file} not found!")
         return
     
+    if not css_file.exists():
+        print(f"❌ Error: {css_file} not found!")
+        return
+    
     # Read source files
     print("Reading source files...")
     html_content = read_file(html_file)
     slides_data_js = read_file(slides_data_file)
+    css_content = read_file(css_file)
+    
+    # Embed CSS
+    print("Embedding CSS...")
+    css_inline = f'<style>\n{css_content}\n    </style>'
+    # Replace the external CSS link with inline CSS
+    html_content = re.sub(
+        r'<link\s+rel="stylesheet"\s+href="[^"]*style\.css"[^>]*>',
+        css_inline,
+        html_content
+    )
     
     # Embed images in JavaScript files (slides-data.js)
     print("Embedding images in JavaScript...")
