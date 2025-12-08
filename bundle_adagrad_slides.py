@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Script to bundle the present folder into a single self-contained HTML file.
-Merges index.html, style.css, script.js and embeds images as base64 data URLs.
+Script to bundle Math4CS_AdaGrad_slides.html and slides-data.js into a single self-contained HTML file.
+Merges HTML, inline CSS, JavaScript and embeds images as base64 data URLs.
 """
 
 import os
@@ -52,12 +52,12 @@ def embed_images(html_content, base_dir):
             return match.group(0)
         
         # Resolve relative path
-        if img_src.startswith('../'):
-            img_path = base_dir.parent / img_src[3:]
-        elif img_src.startswith('./'):
+        if img_src.startswith('image/'):
+            img_path = base_dir / img_src
+        elif img_src.startswith('./image/'):
             img_path = base_dir / img_src[2:]
         else:
-            img_path = base_dir / img_src
+            img_path = base_dir / 'image' / img_src
         
         # Convert to base64 if file exists
         if img_path.exists():
@@ -73,15 +73,15 @@ def embed_images(html_content, base_dir):
 
 def embed_images_in_js(js_content, base_dir):
     """Find and embed all image paths in JavaScript content as base64 data URLs."""
-    # Pattern to match image paths in JavaScript (e.g., "../image/xxx.png" or "../reports_dfl/xxx.png")
-    img_pattern = r'(["\'])(\.\./(?:image|reports_dfl)/[^"\']+\.(?:png|jpg|jpeg|gif|svg|webp))["\']'
+    # Pattern to match image paths in JavaScript (e.g., "image/xxx.png")
+    img_pattern = r'(["\'])(image/[^"\']+\.(?:png|jpg|jpeg|gif|svg|webp))["\']'
 
     def replace_image_path(match):
         quote = match.group(1)
         img_path_str = match.group(2)
 
-        # Resolve relative path from present directory
-        img_path = base_dir.parent / img_path_str.replace('../', '')
+        # Resolve path from base directory
+        img_path = base_dir / img_path_str
 
         # Convert to base64 if file exists
         if img_path.exists():
@@ -95,73 +95,44 @@ def embed_images_in_js(js_content, base_dir):
     return re.sub(img_pattern, replace_image_path, js_content)
 
 
-def bundle_presentation():
-    """Bundle all presentation files into a single HTML file."""
+def bundle_adagrad_slides():
+    """Bundle Math4CS_AdaGrad_slides.html and slides-data.js into a single HTML file."""
     
     # Define paths
-    present_dir = Path(__file__).parent / 'present'
-    output_file = Path(__file__).parent / 'index.html'
+    base_dir = Path(__file__).parent
+    html_file = base_dir / 'Math4CS_AdaGrad_slides.html'
+    slides_data_file = base_dir / 'slides-data.js'
+    output_file = base_dir / 'index.html'
+    
+    # Check if files exist
+    if not html_file.exists():
+        print(f"❌ Error: {html_file} not found!")
+        return
+    
+    if not slides_data_file.exists():
+        print(f"❌ Error: {slides_data_file} not found!")
+        return
     
     # Read source files
     print("Reading source files...")
-    html_content = read_file(present_dir / 'index.html')
-    css_content = read_file(present_dir / 'style.css')
-    slides_data_js = read_file(present_dir / 'slides-data.js')
-    slides_renderer_js = read_file(present_dir / 'slides-renderer.js')
+    html_content = read_file(html_file)
+    slides_data_js = read_file(slides_data_file)
     
     # Embed images in JavaScript files (slides-data.js)
     print("Embedding images in JavaScript...")
-    # First, embed direct image paths (../reports_dfl/...) as before
-    slides_data_js = embed_images_in_js(slides_data_js, present_dir)
-
-    # Additionally, embed images referenced by 'image' and 'dialogImage' fields in slides-data.js
-    def embed_slide_image_fields(js_content, base_dir):
-        # Matches: "image": "../image/xxx.png" or "../reports_dfl/xxx.png"
-        field_pattern = r'(["\'])(image|dialogImage)["\']\s*:\s*(["\'])(\.\./(?:image|reports_dfl)/[^"\']+\.(?:png|jpg|jpeg|gif|svg|webp))["\']'
-        def replace_field(match):
-            field_quote = match.group(1)
-            field_name = match.group(2)
-            value_quote = match.group(3)
-            img_path_str = match.group(4)
-            img_path = base_dir.parent / img_path_str.replace('../', '')
-            if img_path.exists():
-                print(f"  Embedding {field_name} image: {img_path.name}")
-                base64_url = image_to_base64(img_path)
-                return f'{field_quote}{field_name}{field_quote}: {value_quote}{base64_url}{value_quote}'
-            else:
-                print(f"  Warning: {field_name} image not found: {img_path}")
-                return match.group(0)
-        return re.sub(field_pattern, replace_field, js_content)
-
-    slides_data_js = embed_slide_image_fields(slides_data_js, present_dir)
+    slides_data_js = embed_images_in_js(slides_data_js, base_dir)
     
-    # Replace external CSS link with inline styles
-    print("Embedding CSS...")
-    css_inline = f'<style>\n{css_content}\n</style>'
-    html_content = html_content.replace(
-        '<link rel="stylesheet" href="style.css">',
-        css_inline
-    )
-    
-    # Replace external JS scripts with inline scripts
+    # Replace external JS script with inline script
     print("Embedding JavaScript...")
-    # Replace slides-data.js
     slides_data_inline = f'<script>\n{slides_data_js}\n</script>'
     html_content = html_content.replace(
         '<script src="slides-data.js"></script>',
         slides_data_inline
     )
     
-    # Replace slides-renderer.js
-    slides_renderer_inline = f'<script>\n{slides_renderer_js}\n</script>'
-    html_content = html_content.replace(
-        '<script src="slides-renderer.js"></script>',
-        slides_renderer_inline
-    )
-    
-    # Embed images as base64
-    print("Embedding images...")
-    html_content = embed_images(html_content, present_dir)
+    # Embed images in HTML content
+    print("Embedding images in HTML...")
+    html_content = embed_images(html_content, base_dir)
     
     # Write bundled file
     print(f"\nWriting bundled file to: {output_file}")
@@ -181,4 +152,4 @@ def bundle_presentation():
 
 
 if __name__ == '__main__':
-    bundle_presentation()
+    bundle_adagrad_slides()

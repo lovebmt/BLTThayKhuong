@@ -7,7 +7,7 @@ const slides = [
                     <strong>Understanding Adaptive Learning Through First Principles</strong>
                 </p>
                 <p style="font-size: 1.2rem; color: var(--color-text-light);">
-                    Nhóm: Lê Phước Thành, Nguyễn Thành Đạt, Lê Đức Phương
+                    Nhóm: 14 <br>Lê Phước Thành<br>Nguyễn Thành Đạt<br>Lê Đức Phương<br>Bảo An
                 </p>
             </div>
         `
@@ -15,12 +15,12 @@ const slides = [
     
     {
         title: "SECTION 1: INTRODUCTION & PROBLEM STATEMENT",
-        content: `<div class="section-header">Introduction & Problem Statement</div>`
-    },
-    
-    {
-        title: "1.1 Introduction",
+        presenter: "T1",
         content: `
+            <div class="section-header">Introduction & Problem Statement</div>
+            
+            <h3 style="margin-top: 1.5rem;">1.1 Introduction</h3>
+            
             <p>Gradient‐based optimization algorithms play a central role in training machine learning models. However, standard methods such as vanilla Gradient Descent or SGD rely on a <strong>single global learning rate</strong>, causing difficulties when dealing with <strong>heterogeneous or sparse feature spaces</strong>.</p>
             
             <p>The <strong>Adagrad (Adaptive Gradient)</strong> algorithm was proposed to address this issue by adapting the learning rate for each parameter individually based on historical gradient information.</p>
@@ -40,6 +40,7 @@ const slides = [
     
     {
         title: "1.2 Motivation: Sparse Features",
+        presenter: "T1",
         content: `
             <p>In many tasks such as <strong>natural language processing</strong>, data are often <strong>sparse</strong>: most values are zero and only a small subset of features are active. Models like <em>bag-of-words</em> and <em>one-hot encoding</em> may have tens of thousands of features, but each sample only activates a few.</p>
             
@@ -61,6 +62,7 @@ const slides = [
     
     {
         title: "1.2.2 Example of Global Decay Calculation",
+        presenter: "T1",
         content: `
             <p><strong>Assume:</strong></p>
             <ul>
@@ -87,6 +89,7 @@ const slides = [
     
     {
         title: "1.3 Naive Solution and Its Limitations",
+        presenter: "T1",
         content: `
             <p>A simple idea is to track how many times each feature appears.</p>
             
@@ -135,6 +138,7 @@ const slides = [
     
     {
         title: "1.3.2 Limitations",
+        presenter: "T1",
         content: `
             <p><strong>Why this naive approach fails:</strong></p>
             <ol>
@@ -151,11 +155,13 @@ const slides = [
     
     {
         title: "SECTION 2: ALGORITHM & MECHANISM",
+        presenter: "T2",
         content: `<div class="section-header">Algorithm & Mechanism</div>`
     },
     
     {
         title: "2.1 AdaGrad Mechanism: Accumulated Squared Gradients",
+        presenter: "T2",
         content: `
             <h3>2.1.1 From a Simple Counter to Squared Gradients</h3>
             
@@ -188,6 +194,7 @@ const slides = [
     
     {
         title: "2.1.2 Adaptive Learning Rate per Coordinate",
+        presenter: "T2",
         content: `
             <p>Given the accumulated squared gradients $s(i, t)$, Adagrad defines a <strong>per-coordinate learning rate</strong>:</p>
             
@@ -215,6 +222,7 @@ const slides = [
     
     {
         title: "2.1.3 Analysis of the Update Rule",
+        presenter: "T2",
         content: `
             <p><strong>1. No Need for Arbitrary Thresholds</strong></p>
             <p>With Adagrad, every gradient, no matter how small, contributes to $s(i, t)$. Larger gradients naturally contribute more (because they are squared). There is no binary decision ("count" vs "don't count") and no threshold hyperparameter to tune.</p>
@@ -247,6 +255,7 @@ const slides = [
     
     {
         title: "2.2 Adagrad and the Concept of Preconditioning",
+        presenter: "T2",
         content: `
             <h3>2.2.1 Quadratic Convex Optimization and Condition Number</h3>
             
@@ -272,6 +281,7 @@ const slides = [
     
     {
         title: "2.2.2 Preconditioning: Changing Coordinates",
+        presenter: "T2",
         content: `
             <p><strong>Preconditioning</strong> means applying a linear transformation to the variables to improve the condition number and make the optimization landscape "rounder".</p>
             
@@ -295,6 +305,7 @@ const slides = [
     
     {
         title: "2.2.3 Viewing Adagrad as Time-Varying Diagonal Preconditioning",
+        presenter: "T2",
         content: `
             <p><strong>1. Vector Form of Adagrad</strong></p>
             
@@ -337,6 +348,7 @@ const slides = [
     
     {
         title: "2.3 Gradient as a Proxy for the Hessian",
+        presenter: "T2",
         content: `
             <h3>2.3.1 Computing the Hessian Is Not Feasible in Deep Learning</h3>
             
@@ -376,6 +388,7 @@ const slides = [
     
     {
         title: "2.4 The Adagrad Algorithm",
+        presenter: "T2",
         content: `
             <h3>2.4.1 The Algorithm</h3>
             
@@ -404,6 +417,7 @@ const slides = [
     
     {
         title: "2.4.2 Explanation of Each Step",
+        presenter: "T2",
         content: `
             <p><strong>Step 1: Compute gradient</strong></p>
             <div class="math-block">
@@ -432,6 +446,7 @@ const slides = [
     
     {
         title: "2.4.3 Design Principles",
+        presenter: "T2",
         content: `
             <p><strong>1. Per-coordinate adaptation</strong></p>
             <p>In many problems, different coordinates have different "sensitivities". Coordinates that change strongly (large gradients) need small learning rates to avoid overshooting, while coordinates that change weakly (small gradients) need large learning rates to learn faster. Adagrad adjusts automatically without manual tuning for each parameter.</p>
@@ -456,28 +471,14 @@ const slides = [
     },
     
     {
-        title: "2.5 Applications of Adagrad",
-        content: `
-            <p>Adagrad is particularly effective in domains with <strong>sparse data</strong> or features with <strong>varying frequencies</strong>.</p>
-            
-            <p><strong>1. Natural Language Processing (NLP)</strong></p>
-            <p>Example: Text classification using bag-of-words. Rare words still learn meaningful weights thanks to Adagrad.</p>
-            
-            <p><strong>2. Computational Advertising</strong></p>
-            <p>CTR prediction models use user IDs, ad IDs, and queries—mostly sparse features. Adagrad prevents rare ads from being "ignored."</p>
-            
-            <p><strong>3. Recommender Systems</strong></p>
-            <p>Many users or products have few interactions. Adagrad ensures embeddings are sufficiently trained.</p>
-        `
-    },
-    
-    {
         title: "SECTION 3: COMPUTATION & IMPLEMENTATION",
+        presenter: "T3",
         content: `<div class="section-header">Computation & Implementation</div>`
     },
     
     {
         title: "3.1 Step-by-Step Calculation: Axis-Aligned Function",
+        presenter: "T3",
         content: `
             <p><strong>Objective Function:</strong> $f_1(\\mathbf{x}) = 0.1x_1^2 + 2x_2^2$</p>
             
@@ -491,19 +492,41 @@ const slides = [
                 <li>Gradient formula: $\\nabla f_1 = [0.2x_1, 4x_2]$</li>
             </ul>
             
-            <p><strong>Step 1 (t=1):</strong> Current: $(5.0, 3.0)$</p>
-            <div class="two-column">
-                <div>
-                    <p>a. Gradient: $\\mathbf{g}_1 = [1.0, 12.0]$</p>
-                    <p>b. Update $\\mathbf{s}$: $\\mathbf{s}_1 = [1.0, 144.0]$</p>
-                </div>
-                <div>
-                    <p>c. Effective LR: $[0.4, 0.0333]$</p>
-                    <p>d. New point: $(4.6, 2.6)$</p>
-                    <p>Function value: $15.636$</p>
-                </div>
+            <p><strong>Step 1 (t=1):</strong> Current point: $(5.0, 3.0)$</p>
+            
+            <p><strong>a. Compute Gradient:</strong></p>
+            <div class="math-block">
+                $$\\mathbf{g}_1 = \\nabla f_1(5.0, 3.0) = [0.2 \\times 5.0, 4 \\times 3.0] = [1.0, 12.0]$$
             </div>
             
+            <p><strong>b. Update Accumulator $\\mathbf{s}$:</strong></p>
+            <div class="math-block">
+                $$\\mathbf{s}_1 = \\mathbf{s}_0 + \\mathbf{g}_1^2 = [0, 0] + [1.0^2, 12.0^2] = [1.0, 144.0]$$
+            </div>
+            
+            <p><strong>c. Calculate Effective Learning Rate:</strong></p>
+            <div class="math-block">
+                $$\\eta_{1,1} = \\frac{0.4}{\\sqrt{1.0 + 10^{-8}}} \\approx 0.4$$
+                $$\\eta_{2,1} = \\frac{0.4}{\\sqrt{144.0 + 10^{-8}}} \\approx 0.0333$$
+            </div>
+            
+            <p><strong>d. Update Parameters:</strong></p>
+            <div class="math-block">
+                $$x_1^{(1)} = 5.0 - 0.4 \\times 1.0 = 4.6$$
+                $$x_2^{(1)} = 3.0 - 0.0333 \\times 12.0 = 2.6$$
+            </div>
+            
+            <p><strong>e. Function Value:</strong></p>
+            <div class="math-block">
+                $$f_1(4.6, 2.6) = 0.1(4.6)^2 + 2(2.6)^2 = 2.116 + 13.52 = 15.636$$
+            </div>
+        `
+    },
+    
+    {
+        title: "3.1 (continued): Steps 2 and Beyond",
+        presenter: "T3",
+        content: `
             <p><strong>Step 2 (t=2):</strong> Current: $(4.6, 2.6)$</p>
             <div class="two-column">
                 <div>
@@ -516,11 +539,39 @@ const slides = [
                     <p>Function value: $12.817$</p>
                 </div>
             </div>
+            
+            <div class="highlight-box">
+                <strong>Observation:</strong> As iterations progress, the accumulated squared gradients $\\mathbf{s}_t$ grow larger, causing the effective learning rates to decrease. Coordinate $x_2$ has much larger gradients, so its learning rate decreases faster than $x_1$'s.
+            </div>
         `
     },
     
     {
-        title: "3.1 Step-by-Step Calculation: Rotated Function",
+        title: "3.2 Visualization: Adagrad Trajectory",
+        presenter: "T3",
+        content: `
+            <p><strong>Comparing optimization paths with different learning rates:</strong></p>
+            
+            <div class="two-column">
+                <div style="text-align: center;">
+                    <img src="image/Adagrad-Trajectory-lr=0.2.png" alt="Adagrad Trajectory lr=0.2" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    <p style="margin-top: 0.5rem; font-weight: 600;">Learning Rate = 0.2</p>
+                </div>
+                <div style="text-align: center;">
+                    <img src="image/Adagrad-Trajectory-r=3.0.png" alt="Adagrad Trajectory r=3.0" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    <p style="margin-top: 0.5rem; font-weight: 600;">Radius = 3.0</p>
+                </div>
+            </div>
+            
+            <div class="highlight-box" style="margin-top: 1rem;">
+                <strong>Observation:</strong> Adagrad adapts the step size per coordinate, resulting in smoother convergence paths compared to standard gradient descent.
+            </div>
+        `
+    },
+    
+    {
+        title: "3.3 Step-by-Step Calculation: Rotated Function",
+        presenter: "T3",
         content: `
             <p><strong>Objective Function:</strong> $f_2(\\mathbf{x}) = 0.1(x_1 + x_2)^2 + 2(x_1 - x_2)^2$</p>
             
@@ -528,19 +579,42 @@ const slides = [
             
             <p><strong>Setup:</strong> Same as Function 1. Gradient formula: $\\nabla f_2 = [4.2x_1 - 3.8x_2, -3.8x_1 + 4.2x_2]$</p>
             
-            <p><strong>Step 1 (t=1):</strong> Current: $(5.0, 3.0)$</p>
-            <div class="two-column">
-                <div>
-                    <p>a. Gradient: $\\mathbf{g}_1 = [9.6, -6.4]$</p>
-                    <p>b. Update $\\mathbf{s}$: $\\mathbf{s}_1 = [92.16, 40.96]$</p>
-                </div>
-                <div>
-                    <p>c. Effective LR: $[0.0417, 0.0625]$</p>
-                    <p>d. New point: $(4.6, 3.4)$</p>
-                    <p>Function value: $9.28$</p>
-                </div>
+            <p><strong>Step 1 (t=1):</strong> Current point: $(5.0, 3.0)$</p>
+            
+            <p><strong>a. Compute Gradient:</strong></p>
+            <div class="math-block">
+                $$\\mathbf{g}_1 = \\nabla f_2(5.0, 3.0) = [4.2(5.0) - 3.8(3.0), -3.8(5.0) + 4.2(3.0)]$$
+                $$= [21.0 - 11.4, -19.0 + 12.6] = [9.6, -6.4]$$
             </div>
             
+            <p><strong>b. Update Accumulator $\\mathbf{s}$:</strong></p>
+            <div class="math-block">
+                $$\\mathbf{s}_1 = \\mathbf{s}_0 + \\mathbf{g}_1^2 = [0, 0] + [9.6^2, (-6.4)^2] = [92.16, 40.96]$$
+            </div>
+            
+            <p><strong>c. Calculate Effective Learning Rate:</strong></p>
+            <div class="math-block">
+                $$\\eta_{1,1} = \\frac{0.4}{\\sqrt{92.16 + 10^{-8}}} \\approx 0.0417$$
+                $$\\eta_{2,1} = \\frac{0.4}{\\sqrt{40.96 + 10^{-8}}} \\approx 0.0625$$
+            </div>
+            
+            <p><strong>d. Update Parameters:</strong></p>
+            <div class="math-block">
+                $$x_1^{(1)} = 5.0 - 0.0417 \\times 9.6 = 5.0 - 0.4 = 4.6$$
+                $$x_2^{(1)} = 3.0 - 0.0625 \\times (-6.4) = 3.0 + 0.4 = 3.4$$
+            </div>
+            
+            <p><strong>e. Function Value:</strong></p>
+            <div class="math-block">
+                $$f_2(4.6, 3.4) = 2.1(4.6)^2 - 3.8(4.6)(3.4) + 2.1(3.4)^2 = 9.28$$
+            </div>
+        `
+    },
+    
+    {
+        title: "3.3 (continued): Steps 2 and Beyond",
+        presenter: "T3",
+        content: `
             <p><strong>Step 2 (t=2):</strong> Current: $(4.6, 3.4)$</p>
             <div class="two-column">
                 <div>
@@ -561,7 +635,8 @@ const slides = [
     },
     
     {
-        title: "Why is Function 2 More Difficult for Adagrad?",
+        title: "3.4 Why is Function 2 More Difficult for Adagrad?",
+        presenter: "T3",
         content: `
             <p><strong>1. The Root Cause: Coordinate System Mismatch</strong></p>
             
@@ -598,7 +673,101 @@ const slides = [
     },
     
     {
+        title: "SECTION 4: EXERCISES IN DETAIL",
+        presenter: "T4",
+        content: `<div class="section-header">Exercises in Detail</div>`
+    },
+    
+    {
+        title: "4.1 Exercise: Manual Calculation of Adagrad",
+        presenter: "T4",
+        content: `
+            <p><strong>Problem:</strong> Given the function $f(x_1, x_2) = x_1^2 + 4x_2^2$, starting point $(2, 1)$, learning rate $\\eta = 0.5$, $\\epsilon = 10^{-8}$.</p>
+            
+            <p><strong>Task:</strong> Perform 3 iterations of Adagrad and show all calculations.</p>
+            
+            <div class="highlight-box">
+                <strong>Hint:</strong> Follow the same detailed steps as in Section 3:
+                <ul>
+                    <li>Compute gradient $\\mathbf{g}_t$</li>
+                    <li>Update accumulator $\\mathbf{s}_t = \\mathbf{s}_{t-1} + \\mathbf{g}_t^2$</li>
+                    <li>Calculate effective learning rates</li>
+                    <li>Update parameters</li>
+                    <li>Compute function value</li>
+                </ul>
+            </div>
+        `
+    },
+    
+    {
+        title: "4.2 Exercise: Comparing Optimizers",
+        presenter: "T4",
+        content: `
+            <p><strong>Problem:</strong> Compare Adagrad, SGD with fixed learning rate, and SGD with global decay on the Rosenbrock function:</p>
+            
+            <div class="math-block">
+                $$f(x_1, x_2) = (1 - x_1)^2 + 100(x_2 - x_1^2)^2$$
+            </div>
+            
+            <p><strong>Questions:</strong></p>
+            <ol>
+                <li>Which optimizer converges fastest in the first 10 iterations?</li>
+                <li>Which optimizer reaches the lowest function value after 100 iterations?</li>
+                <li>Explain the behavior differences in terms of the Hessian structure</li>
+            </ol>
+            
+            <div class="highlight-box">
+                <strong>Note:</strong> The Rosenbrock function has a narrow parabolic valley. Consider how Adagrad's coordinate-wise adaptation helps or hinders in this landscape.
+            </div>
+        `
+    },
+    
+    {
+        title: "4.3 Exercise: Implementation Challenge",
+        presenter: "T4",
+        content: `
+            <p><strong>Task:</strong> Implement Adagrad from scratch in Python and test on a sparse linear regression problem.</p>
+            
+            <p><strong>Requirements:</strong></p>
+            <ul>
+                <li>Create a dataset with 1000 features, 90% are zeros (sparse)</li>
+                <li>Implement Adagrad optimizer class with methods: <code>step()</code>, <code>zero_grad()</code></li>
+                <li>Compare training loss curves: Adagrad vs. vanilla SGD</li>
+                <li>Visualize the effective learning rates for 5 random features over time</li>
+            </ul>
+            
+            <div class="highlight-box">
+                <strong>Expected Outcome:</strong> Adagrad should show faster convergence on sparse features. Rare features should maintain higher learning rates for longer.
+            </div>
+        `
+    },
+    
+    {
+        title: "4.4 Performance Analysis",
+        presenter: "T4",
+        content: `
+            <p><strong>Comparing Adagrad with other optimizers on real tasks:</strong></p>
+            
+            <div class="two-column">
+                <div style="text-align: center;">
+                    <img src="image/Training-Loss-Comparison.png" alt="Training Loss" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    <p style="margin-top: 0.5rem; font-weight: 600;">Training Loss Over Time</p>
+                </div>
+                <div style="text-align: center;">
+                    <img src="image/Test-Accuracy-Comparison.png" alt="Test Accuracy" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    <p style="margin-top: 0.5rem; font-weight: 600;">Test Accuracy Comparison</p>
+                </div>
+            </div>
+            
+            <div class="highlight-box" style="margin-top: 1rem;">
+                <strong>Key Insight:</strong> Adagrad shows faster initial convergence, especially beneficial for sparse features. However, the aggressive learning rate decay may limit long-term performance on some tasks.
+            </div>
+        `
+    },
+    
+    {
         title: "Summary",
+        presenter: "T4",
         content: `
             <h3>Key Takeaways</h3>
             
