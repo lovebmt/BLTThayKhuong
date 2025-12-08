@@ -1,0 +1,147 @@
+{
+  "title": "Outline Báo Cáo Nhóm (Jupyter Notebook) - Adagrad",
+  "sections": [
+    {
+      "id": "I",
+      "title": "Giới thiệu và Đặt vấn đề (Introduction & Problem Statement)",
+      "items": [
+        {
+          "stt": "1.0",
+          "heading": "Giới thiệu chung (Introduction)",
+          "requirement": "Tóm tắt mục tiêu báo cáo và vai trò của Adagrad trong các thuật toán tối ưu hóa.",
+          "assignee": "T1"
+        },
+        {
+          "stt": "1.1",
+          "heading": "Vấn đề Động lực: Đặc trưng Thưa (Sparse Features)",
+          "requirement": "Trình bày vấn đề: Cần giảm tốc độ học (O(t^{-1/2})) nhưng lại không phù hợp với các đặc trưng thưa (ví dụ: từ hiếm trong ngôn ngữ). Khuyết điểm: Tốc độ học giảm quá nhanh cho các đặc trưng không thường xuyên.",
+          "assignee": "T1"
+        },
+        {
+          "stt": "1.2",
+          "heading": "Giải pháp Thô sơ và Hạn chế",
+          "requirement": "Trình bày ý tưởng dùng bộ đếm số lần quan sát đặc trưng s(i,t) và lý do tại sao phương pháp này không hiệu quả khi gradient nhỏ.",
+          "assignee": "T1"
+        },
+        {
+          "stt": "1.3",
+          "heading": "Ứng dụng của Adagrad",
+          "requirement": "Liệt kê các lĩnh vực Adagrad phát huy hiệu quả (mô hình ngôn ngữ, quảng cáo tính toán, lọc cộng tác cá nhân).",
+          "assignee": "T1"
+        }
+      ]
+    },
+    {
+      "id": "II",
+      "title": "Cơ chế và Công thức Thuật toán (Algorithm & Mechanism)",
+      "items": [
+        {
+          "stt": "2.1",
+          "heading": "Cơ chế Adagrad: Bình phương Gradient Tích lũy",
+          "requirement": "Thay thế bộ đếm thô sơ bằng tổng bình phương của gradient: s(i,t+1) = s(i,t) + (∂_i f(x))^2. Giải thích hai lợi ích: không cần ngưỡng và tự động chia tỉ lệ theo độ lớn gradient.",
+          "assignee": "T2"
+        },
+        {
+          "stt": "2.2",
+          "heading": "Adagrad và Tiền Điều kiện hóa (Preconditioning)",
+          "requirement": "Giải thích vấn đề điều kiện hóa (condition number κ) trong tối ưu hóa lồi với hàm f(x) = 1/2 x^T Qx + c^T x + b.",
+          "assignee": "T2"
+        },
+        {
+          "stt": "2.3",
+          "heading": "Gradient như một Proxy cho Hessian",
+          "requirement": "Giải thích vì sao không thể tính Hessian O(d^2). Mô tả cách Adagrad dùng phương sai gradient làm xấp xỉ đường chéo Hessian.",
+          "assignee": "T2"
+        },
+        {
+          "stt": "2.4",
+          "heading": "Thuật toán Adagrad Chính thức (The Algorithm)",
+          "requirement": "Trình bày công thức cập nhật: g_t = ∂_w l(...), s_t = s_{t-1} + g_t^2, w_t = w_{t-1} - η * g_t / (√(s_t) + ε).",
+          "assignee": "T3"
+        }
+      ]
+    },
+    {
+      "id": "III",
+      "title": "Ví dụ Cụ thể và Thực thi (Computation & Implementation)",
+      "items": [
+        {
+          "stt": "3.1",
+          "heading": "Ví dụ Tính toán Bước theo Bước (Concrete Example)",
+          "requirement": "Áp dụng cho f(x) = 0.1 x1^2 + 2 x2^2. Trình bày 3–5 bước cập nhật đầu tiên và so sánh tốc độ học của x1 và x2.",
+          "assignee": "T3"
+        },
+        {
+          "stt": "3.2",
+          "heading": "Thực thi Adagrad từ đầu (Implementation from Scratch)",
+          "requirement": "Cung cấp mã Python (PyTorch/TensorFlow) cho hàm init_adagrad_states và hàm adagrad.",
+          "assignee": "T4"
+        },
+        {
+          "stt": "3.3",
+          "heading": "Thí nghiệm trên Hàm Lồi Bậc Hai",
+          "requirement": "Minh họa quỹ đạo tối ưu hóa trên f(x)=0.1x1^2+2x2^2 với η=0.4 và η=2. Phân tích sự suy giảm tốc độ học.",
+          "assignee": "T4"
+        },
+        {
+          "stt": "3.4",
+          "heading": "Thực thi Rút gọn (Concise Implementation)",
+          "requirement": "Minh họa việc dùng Adagrad có sẵn trong PyTorch/TensorFlow/MxNet.",
+          "assignee": "T4"
+        }
+      ]
+    },
+    {
+      "id": "IV",
+      "title": "Giải quyết Bài tập (Exercises in Detail)",
+      "items": [
+        {
+          "stt": "4.1",
+          "heading": "Bài tập 1: Chứng minh Ma trận Trực giao",
+          "requirement": "Chứng minh |c−δ|^2 = |Uc−Uδ|^2. Giải thích ý nghĩa với độ lớn nhiễu loạn.",
+          "assignee": "T1",
+          "d2l_exercise": true
+        },
+        {
+          "stt": "4.2",
+          "heading": "Bài tập 2: Thử nghiệm với Hàm Mục tiêu Xoay",
+          "requirement": "So sánh hội tụ của Adagrad trên hàm chuẩn và hàm xoay 45 độ. Có mã Python minh họa.",
+          "assignee": "T3",
+          "d2l_exercise": true
+        },
+        {
+          "stt": "4.3",
+          "heading": "Bài tập 3: Định lý Vòng tròn Gerschgorin",
+          "requirement": "Chứng minh định lý và phân tích trị riêng của ma trận tiền điều kiện hóa.",
+          "assignee": "T2",
+          "d2l_exercise": true
+        },
+        {
+          "stt": "4.4",
+          "heading": "Bài tập 4: Ứng dụng Học Sâu và Cải tiến",
+          "requirement": "Thử nghiệm Adagrad trên mạng sâu (Fashion-MNIST). Đề xuất cách làm giảm tốc độ suy giảm learning rate.",
+          "assignee": "T4",
+          "d2l_exercise": true
+        }
+      ]
+    },
+    {
+      "id": "V",
+      "title": "Tổng kết và Tài liệu Tham khảo",
+      "items": [
+        {
+          "stt": "5.1",
+          "heading": "Tóm tắt (Summary)",
+          "requirement": "Tổng kết ưu điểm: điều chỉnh theo tọa độ, hiệu quả cho đặc trưng thưa, giảm méo cấu trúc tối ưu hóa. Nhược điểm: suy giảm quá nhanh.",
+          "assignee": "T1"
+        },
+        {
+          "stt": "5.2",
+          "heading": "Tài liệu Tham khảo",
+          "requirement": "Liệt kê D2L (Dive into Deep Learning) và bài báo gốc Duchi et al. 2011.",
+          "assignee": "T4"
+        }
+      ]
+    }
+  ]
+}

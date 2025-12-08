@@ -473,6 +473,49 @@ body {
     margin-top: var(--spacing-md);
 }
 
+/* Compact Algorithm Style */
+.two-column-layout.compact-algorithm {
+    gap: 0.6rem;
+}
+
+.two-column-layout.compact-algorithm .info-card {
+    padding: 0.6rem 0.8rem;
+    gap: 0.6rem;
+}
+
+.two-column-layout.compact-algorithm .card-text p {
+    margin: 0.2rem 0;
+    line-height: 1.4;
+    font-size: 0.9rem;
+}
+
+.two-column-layout.compact-algorithm .card-text strong {
+    display: inline-block;
+    margin-bottom: 0.2rem;
+    font-size: 0.95rem;
+}
+
+.two-column-layout.compact-algorithm .icon-badge {
+    width: 36px;
+    height: 36px;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.two-column-layout.compact-algorithm .card-title {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.two-column-layout.compact-algorithm .left-column,
+.two-column-layout.compact-algorithm .right-column {
+    gap: 0.5rem;
+}
+
+.two-column-layout.compact-algorithm .card-section {
+    gap: 0.5rem;
+}
+
 @media (max-width: 768px) {
     .sidebar {
         transform: translateX(-100%);

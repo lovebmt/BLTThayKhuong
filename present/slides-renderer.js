@@ -95,9 +95,10 @@ function renderSingleColumnLayout(content) {
 }
 
 // Render two-column layout
-function renderTwoColumnLayout(columns) {
+function renderTwoColumnLayout(columns, slideType) {
+    const compactClass = slideType === 'algorithm' ? 'compact-algorithm' : '';
     return `
-        <div class="two-column-layout">
+        <div class="two-column-layout ${compactClass}">
             ${columns.map((column, idx) => `
                 <div class="${idx === 0 ? 'left-column' : 'right-column'}">
                     <div class="card-section">
@@ -167,13 +168,92 @@ function renderTableLayout(table, additionalCards) {
 
 // Render image slide
 function renderImageSlide(slide) {
+    const insightHtml = slide.insight ? `
+        <p style="text-align: center; margin-top: 1rem; font-style: italic; opacity: 0.8; max-width: 800px; margin-left: auto; margin-right: auto;">
+            💡 ${slide.insight}
+        </p>
+    ` : '';
+    
     return `
         <div class="full-width-chart" style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
             <div class="chart-container" style="max-height: 600px;">
                 <img src="${slide.image}" alt="${slide.title}" style="${slide.imageStyle || 'max-height: 500px; width: auto; object-fit: contain;'}">
             </div>
+            ${insightHtml}
         </div>
     `;
+}
+
+// Render progressive layout (for step-by-step)
+function renderProgressiveLayout(steps, note) {
+    const stepsHtml = steps.map((step, idx) => {
+        const colors = {
+            'blue': '#2196F3',
+            'green': '#4CAF50',
+            'purple': '#9C27B0',
+            'orange': '#FF9800',
+            'red': '#f44336'
+        };
+        const color = colors[step.color] || '#2196F3';
+        
+        return `
+            <div class="progressive-step" style="display: flex; gap: 0.8rem; margin-bottom: 0.8rem; padding: 0.8rem; border-left: 3px solid ${color};">
+                <div class="step-number" style="flex-shrink: 0; width: 35px; height: 35px; border: 2px solid ${color}; color: ${color}; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: bold;">
+                    ${step.number}
+                </div>
+                <div class="step-content" style="flex: 1;">
+                    <h3 style="margin-bottom: 0.3rem; color: ${color}; font-size: 1rem; font-weight: 600;">${step.title}</h3>
+                    <div style="line-height: 1.5; font-size: 0.9rem;">${step.content}</div>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    const noteHtml = note ? `
+        <div class="algorithm-note" style="margin-top: 0.8rem; padding: 0.8rem; border-left: 3px solid #FFC107;">
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+                <div style="font-size: 1.3rem;">${note.icon}</div>
+                <div>
+                    <h4 style="margin-bottom: 0.2rem; color: #FFC107; font-size: 0.95rem; font-weight: 600;">${note.title}</h4>
+                    <div style="line-height: 1.4; font-size: 0.85rem;">${note.content}</div>
+                </div>
+            </div>
+        </div>
+    ` : '';
+    
+    return `<div class="progressive-layout" style="max-width: 1100px; margin: 0 auto;">${stepsHtml}${noteHtml}</div>`;
+}
+
+// Render calculation layout (for manual calculations)
+function renderCalculationLayout(setup, steps, insight) {
+    const setupHtml = `
+        <div class="calculation-setup" style="padding: 1.5rem; margin-bottom: 2rem; border-left: 4px solid #2196F3;">
+            <h3 style="color: #2196F3; margin-bottom: 1rem;">Setup</h3>
+            ${Object.entries(setup).map(([key, value]) => `
+                <div style="margin-bottom: 0.5rem;"><strong>${key}:</strong> ${value}</div>
+            `).join('')}
+        </div>
+    `;
+    
+    const stepsHtml = steps.map((step, idx) => `
+        <div class="calculation-step" style="margin-bottom: 2rem; padding: 1.5rem; border-left: 4px solid #4CAF50;">
+            <h4 style="color: #4CAF50; margin-bottom: 1rem;">📐 ${step.title}</h4>
+            <div style="font-family: 'Courier New', monospace; padding: 1rem; border: 1px solid rgba(255,255,255,0.2); margin-bottom: 1rem;">
+                ${step.calculations.map(calc => `<div style="margin: 0.5rem 0;">${calc}</div>`).join('')}
+            </div>
+            <div style="font-style: italic; opacity: 0.8; color: #FFC107;">💡 ${step.observation}</div>
+        </div>
+    `).join('');
+    
+    const insightHtml = insight ? `
+        <div class="calculation-insight" style="padding: 2rem; border-left: 4px solid #667eea; margin-top: 2rem;">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">${insight.icon}</div>
+            <h3 style="margin-bottom: 1rem; color: #667eea;">${insight.title}</h3>
+            <div style="line-height: 1.8;">${insight.content}</div>
+        </div>
+    ` : '';
+    
+    return `<div class="calculation-layout" style="max-width: 1000px; margin: 0 auto;">${setupHtml}${stepsHtml}${insightHtml}</div>`;
 }
 
 // Render multi-chart slide
@@ -203,7 +283,7 @@ function renderSlideContent(slide) {
     // Render layout based on slide type
     switch (slide.type) {
         case 'title':
-        case 'content':
+        case 'warning':
             if (slide.layout === 'single-column' && slide.content) {
                 content += renderSingleColumnLayout(slide.content);
             } else if (slide.layout === 'two-column' && slide.columns) {
@@ -212,6 +292,24 @@ function renderSlideContent(slide) {
                 content += renderStatsLayout(slide.statsCards);
             } else if (slide.layout === 'table' && slide.table) {
                 content += renderTableLayout(slide.table, slide.additionalCards);
+            }
+            break;
+        case 'experiment':
+            if (slide.layout === 'two-column' && slide.columns) {
+                content += renderTwoColumnLayout(slide.columns);
+            }
+            break;
+        case 'algorithm':
+        case 'reflection':
+            if (slide.layout === 'progressive' && slide.steps) {
+                content += renderProgressiveLayout(slide.steps, slide.note);
+            } else if (slide.layout === 'two-column' && slide.columns) {
+                content += renderTwoColumnLayout(slide.columns, slide.type);
+            }
+            break;
+        case 'calculation':
+            if (slide.layout === 'calculation') {
+                content += renderCalculationLayout(slide.setup, slide.steps, slide.insight);
             }
             break;
         case 'image':
@@ -225,6 +323,14 @@ function renderSlideContent(slide) {
                 content += `<ol style="text-align: left; max-width: 900px; margin: 2rem auto; line-height: 1.8; opacity: 0.6; font-size: 0.85em;">
                     ${slide.questions.map(q => `<li>${q}</li>`).join('')}
                 </ol>`;
+            }
+            if (slide.closing) {
+                content += `
+                    <div style="margin-top: 3rem; padding: 2rem; border-top: 3px solid #667eea; max-width: 800px; margin-left: auto; margin-right: auto;">
+                        <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: #667eea;">${slide.closing.message}</h3>
+                        <p style="font-style: italic; opacity: 0.8;">${slide.closing.reflection}</p>
+                    </div>
+                `;
             }
             break;
     }
