@@ -633,7 +633,6 @@ const slides = [
             </div>
         `
     },
-    
     {
         title: "3.4 Why is Function 2 More Difficult for Adagrad?",
         presenter: "T3",
@@ -671,6 +670,81 @@ const slides = [
             </div>
         `
     },
+    {
+        title: "3.5 Concise Implementation",
+        presenter: "T3",
+        content: `
+            <h3>Using PyTorch's Built-in Adagrad Optimizer</h3>
+            
+            <p>In practice, we use the optimized implementations provided by deep learning frameworks. Below is how to invoke Adagrad using PyTorch's <code>optim</code> module.</p>
+            
+            <p><strong>Basic Setup:</strong></p>
+            <pre style="background: #f5f5f5; padding: 1rem; border-radius: 4px; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.9rem;">
+import torch.nn as nn
+
+# 1. Define a simple model and loss function
+net = nn.Sequential(nn.Linear(2, 1))
+loss = nn.MSELoss()
+
+# 2. Initialize Adagrad Optimizer
+# We pass the model parameters and the learning rate
+trainer = torch.optim.Adagrad(net.parameters(), lr=0.1)
+
+print(f"Optimizer initialized: {trainer}")</pre>
+            
+            <div class="highlight-box">
+                <strong>Key Parameters:</strong>
+                <ul>
+                    <li><code>lr</code>: Learning rate (default: 0.01)</li>
+                    <li><code>lr_decay</code>: Learning rate decay (default: 0)</li>
+                    <li><code>weight_decay</code>: Weight decay (L2 penalty) (default: 0)</li>
+                    <li><code>eps</code>: Term added to denominator for numerical stability (default: 1e-10)</li>
+                </ul>
+            </div>
+        `
+    },
+    
+    {
+        title: "3.5 Concise Implementation: Usage Example",
+        presenter: "T3",
+        content: `
+            <p><strong>Training Loop Pattern:</strong></p>
+            
+            <pre style="background: #f5f5f5; padding: 1rem; border-radius: 4px; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.9rem;">
+# Training loop (pseudo-code)
+for X, y in data_iter:
+    # Forward pass
+    l = loss(net(X), y)
+    
+    # Clear previous gradients
+    trainer.zero_grad()
+    
+    # Compute new gradients
+    l.backward()
+    
+    # Update parameters using Adagrad logic
+    trainer.step()</pre>
+            
+            <p><strong>What happens inside <code>trainer.step()</code>:</strong></p>
+            <ol>
+                <li>For each parameter, accumulate squared gradients: $s_t = s_{t-1} + g_t^2$</li>
+                <li>Calculate adaptive learning rate: $\\eta_{eff} = \\frac{\\eta}{\\sqrt{s_t + \\epsilon}}$</li>
+                <li>Update parameters: $\\theta_t = \\theta_{t-1} - \\eta_{eff} \\cdot g_t$</li>
+            </ol>
+            
+            <div class="highlight-box">
+                <strong>Advantages of Built-in Implementation:</strong>
+                <ul>
+                    <li>Optimized performance with vectorized operations</li>
+                    <li>Automatic handling of different parameter groups</li>
+                    <li>Support for additional features like weight decay</li>
+                    <li>Well-tested and numerically stable</li>
+                </ul>
+            </div>
+        `
+    },
+    
+    
     
     {
         title: "SECTION 4: EXERCISES IN DETAIL",
@@ -679,88 +753,228 @@ const slides = [
     },
     
     {
-        title: "4.1 Exercise: Manual Calculation of Adagrad",
+        title: "Exercise 1: Proof of Norm Preservation",
         presenter: "T4",
         content: `
-            <p><strong>Problem:</strong> Given the function $f(x_1, x_2) = x_1^2 + 4x_2^2$, starting point $(2, 1)$, learning rate $\\eta = 0.5$, $\\epsilon = 10^{-8}$.</p>
+            <h3>Problem Statement</h3>
+            <p><strong>Prove that for an orthogonal matrix $\\mathbf{U}$ and vectors $\\mathbf{c}, \\boldsymbol{\\delta}$:</strong></p>
+            <div class="math-block">
+                $$\\|\\mathbf{c} - \\boldsymbol{\\delta}\\|_2 = \\|\\mathbf{U}\\mathbf{c} - \\mathbf{U}\\boldsymbol{\\delta}\\|_2$$
+            </div>
             
-            <p><strong>Task:</strong> Perform 3 iterations of Adagrad and show all calculations.</p>
+            <p>Why does this mean that the magnitude of perturbations does not change after an orthogonal change of variables?</p>
+            
+            <h3 style="margin-top: 1.5rem;">Proof Derivation</h3>
+            
+            <p><strong>1. Expansion to Quadratic Form:</strong></p>
+            <p>Express the squared norm using the inner product notation. Recall that $\\|\\mathbf{x}\\|^2 = \\mathbf{x}^\\top \\mathbf{x}$:</p>
+            <div class="math-block">
+                $$\\|\\mathbf{U}\\mathbf{c} - \\mathbf{U}\\boldsymbol{\\delta}\\|^2 = (\\mathbf{U}\\mathbf{c} - \\mathbf{U}\\boldsymbol{\\delta})^\\top (\\mathbf{U}\\mathbf{c} - \\mathbf{U}\\boldsymbol{\\delta})$$
+            </div>
+            
+            <p><strong>2. Factorization and Transpose:</strong></p>
+            <p>Factor out matrix $\\mathbf{U}$: $\\mathbf{U}\\mathbf{c} - \\mathbf{U}\\boldsymbol{\\delta} = \\mathbf{U}(\\mathbf{c} - \\boldsymbol{\\delta})$</p>
+            <p>Applying transpose property $(\\mathbf{AB})^\\top = \\mathbf{B}^\\top \\mathbf{A}^\\top$:</p>
+            <div class="math-block">
+                $$= (\\mathbf{U}(\\mathbf{c} - \\boldsymbol{\\delta}))^\\top (\\mathbf{U}(\\mathbf{c} - \\boldsymbol{\\delta})) = (\\mathbf{c} - \\boldsymbol{\\delta})^\\top \\mathbf{U}^\\top \\mathbf{U} (\\mathbf{c} - \\boldsymbol{\\delta})$$
+            </div>
+        `
+    },
+    
+    {
+        title: "Exercise 1: Proof (continued)",
+        presenter: "T4",
+        content: `
+            <p><strong>3. Applying Orthogonality:</strong></p>
+            <p>Since $\\mathbf{U}$ is an orthogonal matrix, by definition $\\mathbf{U}^\\top \\mathbf{U} = \\mathbf{I}$ (Identity matrix):</p>
+            <div class="math-block">
+                $$(\\mathbf{c} - \\boldsymbol{\\delta})^\\top \\mathbf{I} (\\mathbf{c} - \\boldsymbol{\\delta}) = (\\mathbf{c} - \\boldsymbol{\\delta})^\\top (\\mathbf{c} - \\boldsymbol{\\delta})$$
+            </div>
+            
+            <p><strong>4. Conclusion:</strong></p>
+            <p>Recognizing that $(\\mathbf{c} - \\boldsymbol{\\delta})^\\top (\\mathbf{c} - \\boldsymbol{\\delta})$ is exactly $\\|\\mathbf{c} - \\boldsymbol{\\delta}\\|^2$:</p>
+            <div class="math-block">
+                $$\\|\\mathbf{U}\\mathbf{c} - \\mathbf{U}\\boldsymbol{\\delta}\\|^2 = \\|\\mathbf{c} - \\boldsymbol{\\delta}\\|^2$$
+            </div>
+            <p>Taking the square root of both sides completes the proof:</p>
+            <div class="math-block">
+                $$\\|\\mathbf{U}\\mathbf{c} - \\mathbf{U}\\boldsymbol{\\delta}\\|_2 = \\|\\mathbf{c} - \\boldsymbol{\\delta}\\|_2$$
+            </div>
+            
+            <h3 style="margin-top: 1.5rem;">Interpretation: Stability of Perturbations</h3>
+            <ul>
+                <li><strong>Geometry Preservation:</strong> Orthogonal matrices (rotations/reflections) preserve Euclidean distance</li>
+                <li><strong>Noise Stability:</strong> If $\\boldsymbol{\\delta}$ is a perturbation/noise, its magnitude remains unchanged after transformation</li>
+                <li><strong>Application:</strong> Vital in PCA or SVD, ensuring change of basis doesn't amplify/suppress noise</li>
+            </ul>
+        `
+    },
+    
+    {
+        title: "Exercise 2: Axis-aligned vs Rotated Function",
+        presenter: "T4",
+        content: `
+            <h3>Problem Statement</h3>
+            <p><strong>Try out Adagrad for the following objective functions:</strong></p>
+            
+            <p><strong>1. Axis-aligned function:</strong></p>
+            <div class="math-block">
+                $$f(\\mathbf{x}) = 0.1x_1^2 + 2x_2^2$$
+            </div>
+            
+            <p><strong>2. Rotated function (by 45 degrees):</strong></p>
+            <div class="math-block">
+                $$f(\\mathbf{x}) = 0.1(x_1 + x_2)^2 + 2(x_1 - x_2)^2$$
+            </div>
+            
+            <p><strong>Question:</strong> Does it behave differently?</p>
             
             <div class="highlight-box">
-                <strong>Hint:</strong> Follow the same detailed steps as in Section 3:
+                <strong>Answer:</strong> Yes! This content has been presented in detail in <strong>Section 3.1</strong>. The axis-aligned function converges smoothly because Adagrad's diagonal preconditioning matches the problem geometry. The rotated function converges slower because the optimal direction is diagonal (45°), but Adagrad can only scale coordinates independently.
+            </div>
+        `
+    },
+    
+    {
+        title: "Exercise 5: Adagrad on LeNet (Fashion-MNIST)",
+        presenter: "T4",
+        content: `
+            <h3>Problem Statement</h3>
+            <p>Train the improved LeNet-5 architecture using the Adagrad optimizer on the Fashion-MNIST dataset.</p>
+            
+            <p><strong>Setup:</strong></p>
+            <ul>
+                <li><strong>Model:</strong> Improved LeNet-5 (ReLU activation + MaxPool instead of Sigmoid + AvgPool)</li>
+                <li><strong>Optimizer:</strong> Adagrad with learning rate = 0.01</li>
+                <li><strong>Loss Function:</strong> Cross Entropy Loss</li>
+                <li><strong>Dataset:</strong> Fashion-MNIST (60,000 training images, 10,000 test images)</li>
+                <li><strong>Batch Size:</strong> 256</li>
+                <li><strong>Epochs:</strong> 10</li>
+            </ul>
+            
+            <h3 style="margin-top: 1.5rem;">Architecture Details</h3>
+            <p>The improved LeNet uses ReLU and MaxPool to mitigate vanishing gradient issues:</p>
+            <ul>
+                <li>Conv2d(1→6, kernel=5, padding=2) + ReLU + MaxPool(2×2)</li>
+                <li>Conv2d(6→16, kernel=5) + ReLU + MaxPool(2×2)</li>
+                <li>Flatten + Linear(400→120) + ReLU</li>
+                <li>Linear(120→84) + ReLU</li>
+                <li>Linear(84→10) [Output layer]</li>
+            </ul>
+        `
+    },
+    
+    {
+        title: "Exercise 5: Implementation Code",
+        presenter: "T4",
+        content: `
+            <p><strong>Key Implementation Steps:</strong></p>
+            
+            <p><strong>1. Define the Improved LeNet Model:</strong></p>
+            <pre style="background: #f5f5f5; padding: 1rem; border-radius: 4px; overflow-x: auto;">
+def get_net():
+    return nn.Sequential(
+        nn.Conv2d(1, 6, kernel_size=5, padding=2), nn.ReLU(),
+        nn.MaxPool2d(kernel_size=2, stride=2),
+        nn.Conv2d(6, 16, kernel_size=5), nn.ReLU(),
+        nn.MaxPool2d(kernel_size=2, stride=2),
+        nn.Flatten(),
+        nn.Linear(16 * 5 * 5, 120), nn.ReLU(),
+        nn.Linear(120, 84), nn.ReLU(),
+        nn.Linear(84, 10)
+    ).to(device)</pre>
+            
+            <p><strong>2. Initialize Adagrad Optimizer:</strong></p>
+            <pre style="background: #f5f5f5; padding: 1rem; border-radius: 4px; overflow-x: auto;">
+net = get_net()
+optimizer = torch.optim.Adagrad(net.parameters(), lr=0.01)</pre>
+            
+            <p><strong>3. Training Loop:</strong> Standard PyTorch training loop with forward pass, loss computation, backward pass, and optimizer step.</p>
+        `
+    },
+    
+    {
+        title: "Exercise 5: Results",
+        presenter: "T4",
+        content: `
+            <p><strong>Training Performance:</strong></p>
+            
+            <div class="two-column">
+                <div style="text-align: center;">
+                    <img src="image/Training-Loss.png" alt="Training Loss" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    <p style="margin-top: 0.5rem; font-weight: 600;">Training Loss Over Epochs</p>
+                </div>
+                <div style="text-align: center;">
+                    <img src="image/Test-Accuracy.png" alt="Test Accuracy" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    <p style="margin-top: 0.5rem; font-weight: 600;">Test Accuracy Over Epochs</p>
+                </div>
+            </div>
+            
+            <div class="highlight-box" style="margin-top: 1rem;">
+                <strong>Observations:</strong>
                 <ul>
-                    <li>Compute gradient $\\mathbf{g}_t$</li>
-                    <li>Update accumulator $\\mathbf{s}_t = \\mathbf{s}_{t-1} + \\mathbf{g}_t^2$</li>
-                    <li>Calculate effective learning rates</li>
-                    <li>Update parameters</li>
-                    <li>Compute function value</li>
+                    <li>Training loss decreases steadily across epochs</li>
+                    <li>Test accuracy improves consistently, reaching ~85-88%</li>
+                    <li>Adagrad's adaptive learning rates help different layers learn at appropriate speeds</li>
+                    <li>No manual learning rate scheduling required</li>
                 </ul>
             </div>
         `
     },
     
     {
-        title: "4.2 Exercise: Comparing Optimizers",
+        title: "Exercise 6: Modifying Adagrad for Less Aggressive Decay",
         presenter: "T4",
         content: `
-            <p><strong>Problem:</strong> Compare Adagrad, SGD with fixed learning rate, and SGD with global decay on the Rosenbrock function:</p>
-            
+            <h3>Problem Identification</h3>
+            <p>As observed in the quadratic experiment (Section 3.3), Adagrad's state variable $s_t$ accumulates squared gradients indefinitely:</p>
             <div class="math-block">
-                $$f(x_1, x_2) = (1 - x_1)^2 + 100(x_2 - x_1^2)^2$$
+                $$s_t = s_{t-1} + g_t^2$$
             </div>
             
-            <p><strong>Questions:</strong></p>
-            <ol>
-                <li>Which optimizer converges fastest in the first 10 iterations?</li>
-                <li>Which optimizer reaches the lowest function value after 100 iterations?</li>
-                <li>Explain the behavior differences in terms of the Hessian structure</li>
-            </ol>
+            <p>Because $g_t^2$ is always non-negative, $s_t$ keeps growing. Consequently, the learning rate $\\eta / \\sqrt{s_t}$ eventually decreases to zero. If this happens too early (before reaching the optimum), the model stops learning.</p>
+            
+            <h3 style="margin-top: 1.5rem;">Proposed Modification</h3>
+            <p>To prevent $s_t$ from growing indefinitely, replace the full sum with an <strong>exponential moving average (EMA)</strong>. This allows the algorithm to "forget" old gradients and focus on recent curvature.</p>
+            
+            <p><strong>The Modified Update Rule:</strong></p>
+            <p>Instead of $s_t = s_{t-1} + g_t^2$, use:</p>
+            <div class="math-block">
+                $$s_t \\leftarrow \\gamma s_{t-1} + (1 - \\gamma) g_t^2$$
+            </div>
+            <p>Where $\\gamma$ (typically 0.9) is a decay factor.</p>
             
             <div class="highlight-box">
-                <strong>Note:</strong> The Rosenbrock function has a narrow parabolic valley. Consider how Adagrad's coordinate-wise adaptation helps or hinders in this landscape.
+                <strong>Note:</strong> This specific modification effectively transforms <strong>Adagrad</strong> into the <strong>RMSProp</strong> algorithm. This mechanism is also a foundational component of the <strong>Adam</strong> optimizer.
             </div>
         `
     },
     
     {
-        title: "4.3 Exercise: Implementation Challenge",
+        title: "Exercise 6: Comparison Results",
         presenter: "T4",
         content: `
-            <p><strong>Task:</strong> Implement Adagrad from scratch in Python and test on a sparse linear regression problem.</p>
-            
-            <p><strong>Requirements:</strong></p>
-            <ul>
-                <li>Create a dataset with 1000 features, 90% are zeros (sparse)</li>
-                <li>Implement Adagrad optimizer class with methods: <code>step()</code>, <code>zero_grad()</code></li>
-                <li>Compare training loss curves: Adagrad vs. vanilla SGD</li>
-                <li>Visualize the effective learning rates for 5 random features over time</li>
-            </ul>
-            
-            <div class="highlight-box">
-                <strong>Expected Outcome:</strong> Adagrad should show faster convergence on sparse features. Rare features should maintain higher learning rates for longer.
-            </div>
-        `
-    },
-    
-    {
-        title: "4.4 Performance Analysis",
-        presenter: "T4",
-        content: `
-            <p><strong>Comparing Adagrad with other optimizers on real tasks:</strong></p>
+            <p><strong>Comparing Adagrad vs. RMSProp (Modified Adagrad):</strong></p>
             
             <div class="two-column">
                 <div style="text-align: center;">
-                    <img src="image/Training-Loss-Comparison.png" alt="Training Loss" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                    <p style="margin-top: 0.5rem; font-weight: 600;">Training Loss Over Time</p>
+                    <img src="image/Training-Loss-Comparison.png" alt="Training Loss Comparison" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    <p style="margin-top: 0.5rem; font-weight: 600;">Training Loss Comparison</p>
                 </div>
                 <div style="text-align: center;">
-                    <img src="image/Test-Accuracy-Comparison.png" alt="Test Accuracy" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    <img src="image/Test-Accuracy-Comparison.png" alt="Test Accuracy Comparison" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
                     <p style="margin-top: 0.5rem; font-weight: 600;">Test Accuracy Comparison</p>
                 </div>
             </div>
             
             <div class="highlight-box" style="margin-top: 1rem;">
-                <strong>Key Insight:</strong> Adagrad shows faster initial convergence, especially beneficial for sparse features. However, the aggressive learning rate decay may limit long-term performance on some tasks.
+                <strong>Key Findings:</strong>
+                <ul>
+                    <li><strong>Adagrad:</strong> Fast initial convergence but may plateau due to vanishing learning rate</li>
+                    <li><strong>RMSProp:</strong> Maintains learning capability throughout training by using exponential moving average</li>
+                    <li><strong>Practical Impact:</strong> RMSProp often achieves better final performance on deep learning tasks</li>
+                    <li><strong>Evolution:</strong> This insight led to development of Adam optimizer (RMSProp + momentum)</li>
+                </ul>
             </div>
         `
     },
