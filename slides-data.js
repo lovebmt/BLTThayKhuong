@@ -712,7 +712,7 @@ const slides = [
     
     {
         title: "3.4 Visualization: Adagrad Trajectory for Function 1",
-        presenter: "T3",
+        presenter: "T4",
         content: `
             <p><strong>Comparing optimization paths for Function 1 with different learning rates:</strong></p>
             
@@ -734,7 +734,7 @@ const slides = [
     },
     {
         title: "3.5 Concise Implementation",
-        presenter: "T3",
+        presenter: "T4",
         content: `
             <h3>Using PyTorch's Built-in Adagrad Optimizer</h3>
             
@@ -768,7 +768,7 @@ print(f"Optimizer initialized: {optimizer}")</pre>
     
     {
         title: "3.5 (continued): Usage Example",
-        presenter: "T3",
+        presenter: "T4",
         content: `
             <p><strong>Training Loop Pattern:</strong></p>
             
