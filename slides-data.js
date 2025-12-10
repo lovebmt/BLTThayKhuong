@@ -1,13 +1,24 @@
 const slides = [
     {
-        title: "AdaGrad: Adaptive Gradient Algorithm",
+        title: "REPORT: ADAGRAD OPTIMIZATION ALGORITHM",
         content: `
             <div style="text-align: center;">
-                <p style="font-size: 1.3rem; margin: 2rem 0;">
-                    <strong>Understanding Adaptive Learning Through First Principles</strong>
+                <br>
+                <h3 style="font-size: 1.3rem; margin: 1rem 0;">
+                    <strong>Group 20</strong>
+                </h3>
+                <br>
+                <p style="font-size: 1.1rem; line-height: 1.8; color: var(--color-text-light);">
+                    <strong>Student Members:</strong><br>
+                    Lê Đức Phương - 2570480<br>
+                    Nguyễn Thành Đạt - 2570163<br>
+                    Lê Phước Thành - 2570322<br>
+                    Hồ Bảo An - 2570164
                 </p>
-                <p style="font-size: 1.2rem; color: var(--color-text-light);">
-                    Nhóm: 14 <br>Lê Phước Thành<br>Nguyễn Thành Đạt<br>Lê Đức Phương<br>Bảo An
+                <br>
+                <p style="font-size: 1.1rem; color: var(--color-text-light);">
+                    <strong>Instructor:</strong><br>
+                    Dr. Nguyen An Khuong
                 </p>
             </div>
         `
@@ -227,22 +238,24 @@ const slides = [
             <p><strong>1. No Need for Arbitrary Thresholds</strong></p>
             <p>With Adagrad, every gradient, no matter how small, contributes to $s(i, t)$. Larger gradients naturally contribute more (because they are squared). There is no binary decision ("count" vs "don't count") and no threshold hyperparameter to tune.</p>
             
-            <p><strong>2. Automatic Scaling According to Gradient Magnitude</strong></p>
+            <p><strong>2. The algorithm automatically weighs gradients according to their size</strong></p>
+            
+            <p><strong>3. Automatic Scaling According to Gradient Magnitude</strong></p>
             <p>The accumulated sum $s(i, t) = \\sum_{\\tau=1}^t (\\partial_i f(x_\\tau))^2$ grows:</p>
             <ul>
                 <li><strong>Fast</strong> if gradients for coordinate $i$ are large or frequent</li>
                 <li><strong>Slow</strong> if gradients are small or rare</li>
             </ul>
             
-            <p>Because the effective learning rate is $\\eta_{i,t} = \\frac{\\eta}{\\sqrt{s(i, t) + \\epsilon}}$, this means:</p>
+            <p><strong>4. Because the effective learning rate is $\\eta_{i,t} = \\frac{\\eta}{\\sqrt{s(i, t) + \\epsilon}}$, this means:</strong></p>
             
             <div class="two-column">
                 <div>
-                    <p><strong>For "noisy" or frequently changing coordinates:</strong></p>
+                    <p><strong>For "noisy" or frequently changing coordinates (large or frequent gradients):</strong></p>
                     <p>$s(i, t)$ becomes large → $\\sqrt{s(i, t)}$ is large, so $\\eta_{i,t}$ becomes small. These coordinates are slowed down, avoiding overshooting.</p>
                 </div>
                 <div>
-                    <p><strong>For "quiet" or rare coordinates:</strong></p>
+                    <p><strong>For "quiet" or rare coordinates (small or infrequent gradients):</strong></p>
                     <p>$s(i, t)$ stays small, so $\\eta_{i,t}$ remains relatively large. These coordinates keep larger steps, allowing them to learn even with sparse updates.</p>
                 </div>
             </div>
@@ -334,7 +347,7 @@ const slides = [
             
             <p>Near the optimum, the gradient behaves like $g_t \\approx Q(x_t - x^*)$. In coordinates where the problem is close to axis-aligned, directions with large curvature tend to produce larger gradients.</p>
             
-            <p>Over time, the accumulated squared gradients $s_t$ approximate (up to scaling) the diagonal of $Q^2$. Therefore, taking $D_t^{-1/2}$ is similar to using $\\text{diag}(Q)^{-1/2}$ as a preconditioner.</p>
+            <p>Over time, the accumulated squared gradients $s_t$ approximate (up to scaling) the <strong>diagonal of</strong> $Q^2$. Therefore, taking $D_t^{-1/2}$ is similar to using $\\text{diag}(Q)^{-1/2}$ as a preconditioner.</p>
             
             <p><strong>3. Final Interpretation</strong></p>
             
@@ -368,8 +381,8 @@ const slides = [
             
             <p>Consider one coordinate $i$:</p>
             <ul>
-                <li>If the curvature (roughly $Q_{ii}$) is large, then a small change in $x_i$ produces a large change in the gradient $g_i$</li>
-                <li>Over training, a high-curvature coordinate tends to have larger gradients or higher variability</li>
+                <li>If the <strong>curvature (roughly $Q_{ii}$)</strong> is <strong>large</strong>, then a small change in $x_i$ produces a large change in the gradient $g_i$</li>
+                <li>Over training, a high-curvature coordinate tends to have <strong>larger gradients</strong> (in magnitude) or <strong>higher variability</strong></li>
             </ul>
             
             <p><strong>Adagrad's Approximation Strategy:</strong> Adagrad does not compute the Hessian. Instead, it only observes the gradients $g_t$ over time and accumulates:</p>
@@ -381,8 +394,40 @@ const slides = [
             <p>This quantity captures how large the gradients for coordinate $i$ are on average and how sensitive the loss is to changes in parameter $x_i$.</p>
             
             <div class="highlight-box">
-                <strong>Key Insight:</strong> Adagrad uses the magnitude (variance) of gradients as a proxy for the diagonal of the Hessian.
+                <strong>Key Insight:</strong> Adagrad uses the <strong>magnitude (variance) of gradients</strong> as a <strong>proxy for the diagonal of the Hessian</strong>.
             </div>
+        `
+    },
+    
+    {
+        title: "2.3.3 Adagrad in Deep Learning",
+        presenter: "T2",
+        content: `
+            <p>In deep learning contexts:</p>
+            <ul>
+                <li>Optimization uses <strong>stochastic gradients</strong> from mini-batches</li>
+                <li>Exact second-order information is noisy and expensive</li>
+                <li>However, <strong>gradients are already being computed</strong> at each step</li>
+            </ul>
+            
+            <p><strong>Adagrad leverages this by:</strong></p>
+            <ol>
+                <li><strong>Re-using gradients</strong> to build a running estimate $s(i, t)$ of how "active" each parameter is</li>
+                <li>Interpreting this as rough curvature information per coordinate</li>
+                <li>Scaling learning rates accordingly</li>
+            </ol>
+            
+            <p><strong>So, instead of:</strong></p>
+            <ul>
+                <li><strong>Computing a full Hessian:</strong> Costly $O(d^2)$ memory and $O(d^3)$ time to invert/factorize</li>
+                <li><strong>Adagrad:</strong>
+                    <ul>
+                        <li>Stores only a vector $s_t \\in \\mathbb{R}^d$ (linear cost $O(d)$)</li>
+                        <li>Updates it with simple element-wise operations (very cheap)</li>
+                        <li>Achieves some of the benefits of <strong>Hessian-based preconditioning</strong> by using gradient history as an <strong>implicit, approximate curvature signal</strong></li>
+                    </ul>
+                </li>
+            </ul>
         `
     },
     
@@ -449,7 +494,7 @@ const slides = [
         presenter: "T2",
         content: `
             <p><strong>1. Per-coordinate adaptation</strong></p>
-            <p>In many problems, different coordinates have different "sensitivities". Coordinates that change strongly (large gradients) need small learning rates to avoid overshooting, while coordinates that change weakly (small gradients) need large learning rates to learn faster. Adagrad adjusts automatically without manual tuning for each parameter.</p>
+            <p>In many problems, different coordinates have different "sensitivities". Coordinates that <strong>change strongly</strong> (large gradients) need <strong>small</strong> learning rates to avoid overshooting, while coordinates that <strong>change weakly</strong> (small gradients) need <strong>large</strong> learning rates to learn faster. Adagrad adjusts automatically without manual tuning for each parameter.</p>
             
             <p><strong>2. Connection to Preconditioning</strong></p>
             <p>This is an application of <strong>automatic preconditioning</strong> - Adagrad uses gradient magnitude as a proxy for the diagonal of the Hessian, helping to "flatten" the objective function without computing eigenvalues.</p>
@@ -463,10 +508,27 @@ const slides = [
             <ul>
                 <li>Memory: Track auxiliary variable $\\mathbf{s}_t$ with $O(d)$ storage</li>
                 <li>Comparison: Negligible vs. full Hessian's $O(d^2)$ cost</li>
-                <li>Learning rate decay: $O(1/\sqrt{t})$ - stable for convex problems</li>
+                <li>Learning rate decay: $O(1/\\sqrt{t})$ - stable for convex problems</li>
                 <li>Limitation: May decrease too quickly for non-convex/deep learning tasks</li>
                 <li>Solution: Variants like RMSProp or Adam</li>
             </ul>
+        `
+    },
+    
+    {
+        title: "2.5 Applications of Adagrad",
+        presenter: "T2",
+        content: `
+            <p>Adagrad is particularly effective in domains with <strong>sparse data</strong> or features with <strong>varying frequencies</strong>.</p>
+            
+            <p><strong>1. Natural Language Processing (NLP)</strong></p>
+            <p><em>Example:</em> Text classification using <em>bag-of-words</em>. Rare words still learn meaningful weights thanks to Adagrad.</p>
+            
+            <p><strong>2. Computational Advertising</strong></p>
+            <p>CTR prediction models use user IDs, ad IDs, and queries—mostly sparse features. Adagrad prevents rare ads from being "ignored."</p>
+            
+            <p><strong>3. Recommender Systems</strong></p>
+            <p>Many users or products have few interactions. Adagrad ensures embeddings are sufficiently trained.</p>
         `
     },
     
@@ -547,30 +609,7 @@ const slides = [
     },
     
     {
-        title: "3.2 Visualization: Adagrad Trajectory",
-        presenter: "T3",
-        content: `
-            <p><strong>Comparing optimization paths with different learning rates:</strong></p>
-            
-            <div class="two-column">
-                <div style="text-align: center;">
-                    <img src="image/Adagrad-Trajectory-lr=0.2.png" alt="Adagrad Trajectory lr=0.2" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                    <p style="margin-top: 0.5rem; font-weight: 600;">Learning Rate = 0.2</p>
-                </div>
-                <div style="text-align: center;">
-                    <img src="image/Adagrad-Trajectory-r=3.0.png" alt="Adagrad Trajectory r=3.0" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                    <p style="margin-top: 0.5rem; font-weight: 600;">Radius = 3.0</p>
-                </div>
-            </div>
-            
-            <div class="highlight-box" style="margin-top: 1rem;">
-                <strong>Observation:</strong> Adagrad adapts the step size per coordinate, resulting in smoother convergence paths compared to standard gradient descent.
-            </div>
-        `
-    },
-    
-    {
-        title: "3.3 Step-by-Step Calculation: Rotated Function",
+        title: "3.2 Step-by-Step Calculation: Rotated Function",
         presenter: "T3",
         content: `
             <p><strong>Objective Function:</strong> $f_2(\\mathbf{x}) = 0.1(x_1 + x_2)^2 + 2(x_1 - x_2)^2$</p>
@@ -612,7 +651,7 @@ const slides = [
     },
     
     {
-        title: "3.3 (continued): Steps 2 and Beyond",
+        title: "3.2 (continued): Steps 2 and Beyond",
         presenter: "T3",
         content: `
             <p><strong>Step 2 (t=2):</strong> Current: $(4.6, 3.4)$</p>
@@ -634,7 +673,7 @@ const slides = [
         `
     },
     {
-        title: "3.4 Why is Function 2 More Difficult for Adagrad?",
+        title: "3.3 Why is Function 2 More Difficult for Adagrad?",
         presenter: "T3",
         content: `
             <p><strong>1. The Root Cause: Coordinate System Mismatch</strong></p>
@@ -670,6 +709,29 @@ const slides = [
             </div>
         `
     },
+    
+    {
+        title: "3.4 Visualization: Adagrad Trajectory for Function 1",
+        presenter: "T3",
+        content: `
+            <p><strong>Comparing optimization paths for Function 1 with different learning rates:</strong></p>
+            
+            <div class="two-column">
+                <div style="text-align: center;">
+                    <img src="image/Adagrad-Trajectory-lr=0.2.png" alt="Adagrad Trajectory lr=0.2" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    <p style="margin-top: 0.5rem; font-weight: 600;">Learning Rate = 0.2</p>
+                </div>
+                <div style="text-align: center;">
+                    <img src="image/Adagrad-Trajectory-r=3.0.png" alt="Adagrad Trajectory r=3.0" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    <p style="margin-top: 0.5rem; font-weight: 600;">Radius = 3.0</p>
+                </div>
+            </div>
+            
+            <div class="highlight-box" style="margin-top: 1rem;">
+                <strong>Observation:</strong> For the axis-aligned Function 1, Adagrad adapts the step size per coordinate, resulting in smoother convergence paths compared to standard gradient descent.
+            </div>
+        `
+    },
     {
         title: "3.5 Concise Implementation",
         presenter: "T3",
@@ -688,9 +750,9 @@ loss = nn.MSELoss()
 
 # 2. Initialize Adagrad Optimizer
 # We pass the model parameters and the learning rate
-trainer = torch.optim.Adagrad(net.parameters(), lr=0.1)
+optimizer = torch.optim.Adagrad(net.parameters(), lr=0.1)
 
-print(f"Optimizer initialized: {trainer}")</pre>
+print(f"Optimizer initialized: {optimizer}")</pre>
             
             <div class="highlight-box">
                 <strong>Key Parameters:</strong>
@@ -705,7 +767,7 @@ print(f"Optimizer initialized: {trainer}")</pre>
     },
     
     {
-        title: "3.5 Concise Implementation: Usage Example",
+        title: "3.5 (continued): Usage Example",
         presenter: "T3",
         content: `
             <p><strong>Training Loop Pattern:</strong></p>
@@ -717,15 +779,15 @@ for X, y in data_iter:
     l = loss(net(X), y)
     
     # Clear previous gradients
-    trainer.zero_grad()
+    optimizer.zero_grad()
     
     # Compute new gradients
     l.backward()
     
     # Update parameters using Adagrad logic
-    trainer.step()</pre>
+    optimizer.step()</pre>
             
-            <p><strong>What happens inside <code>trainer.step()</code>:</strong></p>
+            <p><strong>What happens inside <code>optimizer.step()</code>:</strong></p>
             <ol>
                 <li>For each parameter, accumulate squared gradients: $s_t = s_{t-1} + g_t^2$</li>
                 <li>Calculate adaptive learning rate: $\\eta_{eff} = \\frac{\\eta}{\\sqrt{s_t + \\epsilon}}$</li>
@@ -831,6 +893,133 @@ for X, y in data_iter:
             
             <div class="highlight-box">
                 <strong>Answer:</strong> Yes! This content has been presented in detail in <strong>Section 3.1</strong>. The axis-aligned function converges smoothly because Adagrad's diagonal preconditioning matches the problem geometry. The rotated function converges slower because the optimal direction is diagonal (45°), but Adagrad can only scale coordinates independently.
+            </div>
+        `
+    },
+    
+    {
+        title: "Exercise 3: Proof of the Gershgorin Circle Theorem",
+        presenter: "T4",
+        content: `
+            <h3>Problem Statement</h3>
+            <p><strong>Prove Gerschgorin's circle theorem which states that eigenvalues $\\lambda_i$ of a matrix $\\mathbf{M}$ satisfy:</strong></p>
+            <div class="math-block">
+                $$|\\lambda_i - \\mathbf{M}_{jj}| \\leq \\sum_{k \\neq j} |\\mathbf{M}_{jk}|$$
+            </div>
+            <p>for at least one choice of $j$.</p>
+            
+            <h3 style="margin-top: 1.5rem;">Proof</h3>
+            
+            <p>Let $\\lambda$ be an eigenvalue of $\\mathbf{M}$ with a corresponding eigenvector $x = (x_1, x_2, \\dots, x_n)^\\top \\neq 0$.</p>
+            
+            <p>The eigenvalue equation is: $\\mathbf{M} x = \\lambda x$</p>
+            
+            <p>Consider the $i$-th row of this equation:</p>
+            <div class="math-block">
+                $$\\sum_{j=1}^n \\mathbf{M}_{ij} x_j = \\lambda x_i$$
+            </div>
+            
+            <p>Separate the diagonal term from the summation:</p>
+            <div class="math-block">
+                $$\\mathbf{M}_{ii} x_i + \\sum_{j \\neq i} \\mathbf{M}_{ij} x_j = \\lambda x_i$$
+            </div>
+            
+            <p>Rearranging the terms:</p>
+            <div class="math-block">
+                $$\\sum_{j \\neq i} \\mathbf{M}_{ij} x_j = (\\lambda - \\mathbf{M}_{ii}) x_i \\quad (*)$$
+            </div>
+        `
+    },
+    
+    {
+        title: "Exercise 3: Proof (continued)",
+        presenter: "T4",
+        content: `
+            <p>Since $x$ is an eigenvector, it is not the zero vector. Let us choose the index $i$ corresponding to the component with the largest absolute value:</p>
+            <div class="math-block">
+                $$|x_i| = \\max_{k} |x_k| > 0$$
+            </div>
+            
+            <p>Note that for all $j$, we have $\\frac{|x_j|}{|x_i|} \\leq 1$.</p>
+            
+            <p>Taking the absolute value of both sides of equation $(*)$ and applying the triangle inequality:</p>
+            <div class="math-block">
+                $$|(\\lambda - \\mathbf{M}_{ii}) x_i| = \\left| \\sum_{j \\neq i} \\mathbf{M}_{ij} x_j \\right| \\leq \\sum_{j \\neq i} |\\mathbf{M}_{ij}| |x_j|$$
+            </div>
+            
+            <div class="math-block">
+                $$|\\lambda - \\mathbf{M}_{ii}| |x_i| \\leq \\sum_{j \\neq i} |\\mathbf{M}_{ij}| |x_j|$$
+            </div>
+            
+            <p>Dividing both sides by $|x_i|$ (which is valid since $|x_i| > 0$):</p>
+            <div class="math-block">
+                $$|\\lambda - \\mathbf{M}_{ii}| \\leq \\sum_{j \\neq i} |\\mathbf{M}_{ij}| \\frac{|x_j|}{|x_i|}$$
+            </div>
+            
+            <p>Since $\\frac{|x_j|}{|x_i|} \\leq 1$, we arrive at:</p>
+            <div class="math-block">
+                $$|\\lambda - \\mathbf{M}_{ii}| \\leq \\sum_{j \\neq i} |\\mathbf{M}_{ij}|$$
+            </div>
+            
+            <div class="highlight-box">
+                <strong>Conclusion:</strong> This inequality shows that the eigenvalue $\\lambda$ lies in the disc centered at $\\mathbf{M}_{ii}$ with radius $R_i = \\sum_{j \\neq i} |\\mathbf{M}_{ij}|$. Thus, every eigenvalue must satisfy this condition for at least one row index $i$.
+            </div>
+        `
+    },
+    
+    {
+        title: "Exercise 4: Eigenvalues of Diagonally Preconditioned Matrices",
+        presenter: "T4",
+        content: `
+            <h3>Problem Statement</h3>
+            <p><strong>What does Gerschgorin's theorem tell us about the eigenvalues of the diagonally preconditioned matrix $\\text{diag}^{-1/2}(\\mathbf{M})\\mathbf{M}\\text{diag}^{-1/2}(\\mathbf{M})$?</strong></p>
+            
+            <h3 style="margin-top: 1.5rem;">Answer</h3>
+            
+            <p>Let $\\mathbf{D} = \\text{diag}(\\mathbf{M})$. The preconditioned matrix is defined as:</p>
+            <div class="math-block">
+                $$\\tilde{\\mathbf{M}} = \\mathbf{D}^{-1/2} \\mathbf{M} \\mathbf{D}^{-1/2}$$
+            </div>
+            
+            <p>The entries of this new matrix are:</p>
+            <div class="math-block">
+                $$\\tilde{m}_{ij} = \\frac{\\mathbf{M}_{ij}}{\\sqrt{\\mathbf{M}_{ii}\\mathbf{M}_{jj}}}$$
+            </div>
+            
+            <p><strong>1. Centers of the Gerschgorin discs:</strong></p>
+            <p>For the diagonal elements ($i=j$):</p>
+            <div class="math-block">
+                $$\\tilde{m}_{ii} = \\frac{\\mathbf{M}_{ii}}{\\sqrt{\\mathbf{M}_{ii}\\mathbf{M}_{ii}}} = 1$$
+            </div>
+            <p>This means every Gerschgorin disc for the matrix $\\tilde{\\mathbf{M}}$ is <strong>centered exactly at 1</strong> in the complex plane.</p>
+        `
+    },
+    
+    {
+        title: "Exercise 4: Answer (continued)",
+        presenter: "T4",
+        content: `
+            <p><strong>2. Radii of the Gerschgorin discs:</strong></p>
+            <p>The radius $R_i$ for the $i$-th row is the sum of the absolute values of the off-diagonal entries:</p>
+            <div class="math-block">
+                $$R_i = \\sum_{j \\neq i} |\\tilde{m}_{ij}| = \\sum_{j \\neq i} \\frac{|\\mathbf{M}_{ij}|}{\\sqrt{\\mathbf{M}_{ii}\\mathbf{M}_{jj}}}$$
+            </div>
+            
+            <h3 style="margin-top: 1.5rem;">Conclusion</h3>
+            
+            <p>Gerschgorin's theorem tells us that every eigenvalue $\\lambda$ of the preconditioned matrix $\\tilde{\\mathbf{M}}$ satisfies:</p>
+            <div class="math-block">
+                $$|\\lambda - 1| \\leq \\sum_{j \\neq i} \\frac{|\\mathbf{M}_{ij}|}{\\sqrt{\\mathbf{M}_{ii}\\mathbf{M}_{jj}}}$$
+            </div>
+            
+            <div class="highlight-box">
+                <strong>Interpretation:</strong> 
+                <ul>
+                    <li>The eigenvalues are <strong>clustered around 1</strong></li>
+                    <li>The maximum distance of any eigenvalue from 1 is bounded by the sum of the normalized off-diagonal elements</li>
+                    <li>If the original matrix $\\mathbf{M}$ is <strong>diagonally dominant</strong> (diagonal elements much larger than off-diagonal ones), the eigenvalues will be very close to 1</li>
+                    <li>This indicates a <strong>condition number close to 1</strong>, which is ideal for numerical stability and convergence speed in iterative algorithms</li>
+                </ul>
             </div>
         `
     },
@@ -980,7 +1169,7 @@ optimizer = torch.optim.Adagrad(net.parameters(), lr=0.01)</pre>
     },
     
     {
-        title: "Summary",
+        title: "Summary & Key Takeaways",
         presenter: "T4",
         content: `
             <h3>Key Takeaways</h3>
@@ -995,9 +1184,32 @@ optimizer = torch.optim.Adagrad(net.parameters(), lr=0.01)</pre>
                 <li><strong>Limitation:</strong> Learning rate may decay too quickly; suboptimal for non-axis-aligned problems</li>
                 <li><strong>Evolution:</strong> Led to RMSProp and Adam optimizers</li>
             </ul>
+        `
+    },
+    
+    {
+        title: "References",
+        presenter: "T4",
+        content: `
+            <h3 style="margin-bottom: 2rem;">References</h3>
             
-            <div style="text-align: center; margin-top: 3rem; font-size: 1.5rem;">
+            <div style="font-size: 1rem; line-height: 2;">
+                <p style="margin-bottom: 1.5rem;">
+                    [1] A. Zhang, Z. C. Lipton, M. Li, and A. J. Smola, <em>Dive into Deep Learning</em>. Cambridge University Press, 2023. [Online]. Available: <a href="https://D2L.ai" target="_blank" style="color: #3498db; text-decoration: underline;">https://D2L.ai</a>
+                </p>
+                
+                <p style="margin-bottom: 1.5rem;">
+                    [2] J. Duchi, E. Hazan, and Y. Singer, "Adaptive subgradient methods for online learning and stochastic optimization," <em>J. Mach. Learn. Res.</em>, vol. 12, no. 61, pp. 2121–2159, 2011.
+                </p>
+            </div>
+            
+            <div style="text-align: center; margin-top: 4rem; font-size: 1.8rem; color: #2c3e50;">
                 <strong>Thank you!</strong> 🙏
+            </div>
+            
+            <div style="text-align: center; margin-top: 2rem; font-size: 1rem; color: var(--color-text-light);">
+                <p><strong>Group 20</strong></p>
+                <p>Mathematical Foundations for Computer Science</p>
             </div>
         `
     }
