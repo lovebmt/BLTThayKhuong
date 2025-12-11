@@ -103,7 +103,7 @@ def bundle_adagrad_slides():
     html_file = base_dir / 'Math4CS_AdaGrad_slides.html'
     slides_data_file = base_dir / 'slides-data.js'
     css_file = base_dir / 'style.css'
-    output_file = base_dir / 'index.html'
+    output_file = base_dir.parent / 'index.html'
     
     # Check if files exist
     if not html_file.exists():
