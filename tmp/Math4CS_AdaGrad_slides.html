@@ -187,8 +187,10 @@
         
         .slide-counter {
             position: fixed;
-            top: 2rem;
-            right: 2rem;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-left: -8rem;
             background: white;
             padding: 0.5rem 1rem;
             border-radius: var(--radius-full);
@@ -199,7 +201,7 @@
         
         .presenter-badge {
             position: fixed;
-            top: 2rem;
+            bottom: 2rem;
             left: 2rem;
             background: rgba(162, 0, 255, 0.2); /* màu chính + trong suốt */
             color: white;
@@ -274,6 +276,21 @@
             background: rgba(0, 0, 0, 0.2);
             border-radius: 4px;
         }
+        
+        .bk-logo {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: auto;
+            z-index: 1001;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+        
+        .bk-logo:hover {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -295,6 +312,8 @@
         <button class="nav-btn" id="prevBtn" onclick="previousSlide()">←</button>
         <button class="nav-btn" id="nextBtn" onclick="nextSlide()">→</button>
     </div>
+    
+    <img src="image/bk_logo.png" alt="BK Logo" class="bk-logo">
 
     <script src="slides-data.js"></script>
     <script>
