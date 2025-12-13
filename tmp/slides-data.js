@@ -387,7 +387,7 @@ const slides = [
     
     {
         title: "Gradient as a Proxy for the Hessian",
-        presenter: "T2",
+        presenter: "T4",
         content: `
             <h3>Computing the Hessian Is Not Feasible in Deep Learning</h3>
             
@@ -427,7 +427,7 @@ const slides = [
     
     {
         title: "Adagrad in Deep Learning",
-        presenter: "T2",
+        presenter: "T4",
         content: `
             <p>In deep learning contexts:</p>
             <ul>
@@ -459,7 +459,7 @@ const slides = [
     
     {
         title: "The Adagrad Algorithm",
-        presenter: "T2",
+        presenter: "T3",
         content: `
             <h3>The Algorithm</h3>
             
@@ -488,7 +488,7 @@ const slides = [
     
     {
         title: "Explanation of Each Step",
-        presenter: "T2",
+        presenter: "T3",
         content: `
             <p><strong>Step 1: Compute gradient</strong></p>
             <div class="math-block">
@@ -517,7 +517,7 @@ const slides = [
     
     {
         title: "Design Principles",
-        presenter: "T2",
+        presenter: "T3",
         content: `
             <p><strong>1. Per-coordinate adaptation</strong></p>
             <p>In many problems, different coordinates have different "sensitivities". Coordinates that <strong>change strongly</strong> (large gradients) need <strong>small</strong> learning rates to avoid overshooting, while coordinates that <strong>change weakly</strong> (small gradients) need <strong>large</strong> learning rates to learn faster. Adagrad adjusts automatically without manual tuning for each parameter.</p>
