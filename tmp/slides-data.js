@@ -21,6 +21,18 @@ const slides = [
                     Dr. Nguyen An Khuong
                 </p>
             </div>
+            
+            <div style="margin-top: 2rem; text-align: left; padding: 0 3rem;">
+                <h3 style="font-size: 1.2rem; margin-bottom: 1rem; color: var(--color-primary);">
+                    <strong>Report Structure:</strong>
+                </h3>
+                <ul style="font-size: 1.1rem; line-height: 2;">
+                    <li><strong>SECTION 1:</strong> INTRODUCTION & PROBLEM STATEMENT</li>
+                    <li><strong>SECTION 2:</strong> ALGORITHM & MECHANISM</li>
+                    <li><strong>SECTION 3:</strong> COMPUTATION & IMPLEMENTATION</li>
+                    <li><strong>SECTION 4:</strong> EXERCISES IN DETAIL</li>
+                </ul>
+            </div>
         `
     },
     
@@ -711,7 +723,7 @@ const slides = [
     },
     
     {
-        title: "Visualization: Adagrad Trajectory for Function 1",
+        title: "Experiment: Adagrad Trajectory for Function 1",
         presenter: "T4",
         content: `
             <p><strong>Comparing optimization paths for Function 1 with different learning rates:</strong></p>
@@ -723,7 +735,7 @@ const slides = [
                 </div>
                 <div style="text-align: center;">
                     <img src="image/Adagrad-Trajectory-r=3.0.png" alt="Adagrad Trajectory r=3.0" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                    <p style="margin-top: 0.5rem; font-weight: 600;">Radius = 3.0</p>
+                    <p style="margin-top: 0.5rem; font-weight: 600;">Learning Rate = 3.0</p>
                 </div>
             </div>
             
