@@ -539,7 +539,7 @@ const slides = [
     },
     
     {
-        title: "3.1 Step-by-Step Calculation: Axis-Aligned Function",
+        title: "Step-by-Step Calculation: Axis-Aligned Function",
         presenter: "T3",
         content: `
             <p><strong>Objective Function:</strong> $f_1(\\mathbf{x}) = 0.1x_1^2 + 2x_2^2$</p>
