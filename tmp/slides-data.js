@@ -514,36 +514,9 @@ const slides = [
             </div>
         `
     },
-    
-    {
-        title: "Design Principles",
-        presenter: "T3",
-        content: `
-            <p><strong>1. Per-coordinate adaptation</strong></p>
-            <p>In many problems, different coordinates have different "sensitivities". Coordinates that <strong>change strongly</strong> (large gradients) need <strong>small</strong> learning rates to avoid overshooting, while coordinates that <strong>change weakly</strong> (small gradients) need <strong>large</strong> learning rates to learn faster. Adagrad adjusts automatically without manual tuning for each parameter.</p>
-            
-            <p><strong>2. Connection to Preconditioning</strong></p>
-            <p>This is an application of <strong>automatic preconditioning</strong> - Adagrad uses gradient magnitude as a proxy for the diagonal of the Hessian, helping to "flatten" the objective function without computing eigenvalues.</p>
-            
-            <p>Each step is equivalent to gradient descent with a diagonal scaling matrix:</p>
-            <div class="math-block">
-                $$D_t = \\text{diag}\\left(\\frac{1}{\\sqrt{s_t}}\\right)$$
-            </div>
-            
-            <p><strong>3. Computational Cost</strong></p>
-            <ul>
-                <li>Memory: Track auxiliary variable $\\mathbf{s}_t$ with $O(d)$ storage</li>
-                <li>Comparison: Negligible vs. full Hessian's $O(d^2)$ cost</li>
-                <li>Learning rate decay: $O(1/\\sqrt{t})$ - stable for convex problems</li>
-                <li>Limitation: May decrease too quickly for non-convex/deep learning tasks</li>
-                <li>Solution: Variants like RMSProp or Adam</li>
-            </ul>
-        `
-    },
-    
     {
         title: "Applications of Adagrad",
-        presenter: "T2",
+        presenter: "T3",
         content: `
             <p>Adagrad is particularly effective in domains with <strong>sparse data</strong> or features with <strong>varying frequencies</strong>.</p>
             
