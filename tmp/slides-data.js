@@ -737,6 +737,26 @@ const slides = [
     },
     
     {
+        title: "Visual Comparison: Trajectory Analysis",
+        presenter: "T3",
+        content: `
+            <div style="text-align: center;">
+                <img src="image/compare2f.png" alt="Comparison of Function 1 and Function 2 Trajectories" style="max-width: 95%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin: 1rem 0;">
+            </div>
+            
+            <div class="highlight-box" style="margin-top: 1.5rem;">
+                <p><strong>Key Observations from the Visualization:</strong></p>
+                <ul>
+                    <li><strong>Function 1 (Left - Simple Ellipse):</strong> Clean, direct trajectory from start (5.0, 3.0) to near-optimal point. The contour lines are axis-aligned ellipses, matching Adagrad's diagonal scaling.</li>
+                    <li><strong>Function 2 (Right - Narrow Valley):</strong> Complex trajectory must navigate the rotated "narrow valley" created by the cross-term. The contour lines are densely packed and rotated 45°, making optimization much harder.</li>
+                    <li><strong>Distance from Origin:</strong> f1 reaches ~1.93 units from origin, while f2 only reaches ~4.00 units - demonstrating the difficulty of converging in the rotated space.</li>
+                    <li><strong>Path Complexity:</strong> f2's trajectory shows the struggle to follow the valley's diagonal direction using only axis-aligned adjustments.</li>
+                </ul>
+            </div>
+        `
+    },
+    
+    {
         title: "Experiment: Adagrad Trajectory for Function 1",
         presenter: "T4",
         content: `
