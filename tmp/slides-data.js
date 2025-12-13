@@ -2,36 +2,56 @@ const slides = [
     {
         title: "REPORT: ADAGRAD OPTIMIZATION ALGORITHM",
         content: `
-            <div style="text-align: center;">
-                <br>
-                <h3 style="font-size: 1.3rem; margin: 1rem 0;">
+            <div style="text-align: center; padding-top: 3rem;">
+                <h3 style="font-size: 1.5rem; margin: 2rem 0;">
                     <strong>Group 20</strong>
                 </h3>
                 <br>
-                <p style="font-size: 1.1rem; line-height: 1.8; color: var(--color-text-light);">
+                <p style="font-size: 1.2rem; line-height: 2; color: var(--color-text-light);">
                     <strong>Student Members:</strong><br>
                     Lê Đức Phương - 2570480<br>
                     Nguyễn Thành Đạt - 2570163<br>
                     Lê Phước Thành - 2570322<br>
                     Hồ Bảo An - 2570164
                 </p>
-                <br>
-                <p style="font-size: 1.1rem; color: var(--color-text-light);">
+                <br><br>
+                <p style="font-size: 1.2rem; color: var(--color-text-light);">
                     <strong>Instructor:</strong><br>
                     Dr. Nguyen An Khuong
                 </p>
             </div>
-            
-            <div style="margin-top: 2rem; text-align: left; padding: 0 3rem;">
-                <h3 style="font-size: 1.2rem; margin-bottom: 1rem; color: var(--color-primary);">
-                    <strong>Report Structure:</strong>
-                </h3>
-                <ul style="font-size: 1.1rem; line-height: 2;">
-                    <li><strong>SECTION 1:</strong> INTRODUCTION & PROBLEM STATEMENT</li>
-                    <li><strong>SECTION 2:</strong> ALGORITHM & MECHANISM</li>
-                    <li><strong>SECTION 3:</strong> COMPUTATION & IMPLEMENTATION</li>
-                    <li><strong>SECTION 4:</strong> EXERCISES IN DETAIL</li>
-                </ul>
+        `
+    },
+    
+    {
+        title: "OUTLINE",
+        content: `
+            <div style="padding: 2rem 4rem;">
+                <div style="display: grid; gap: 2rem; margin-top: 2rem;">
+                    <div class="highlight-box" style="padding: 1.5rem; border-left: 5px solid var(--color-primary);">
+                        <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">
+                            <strong>SECTION 1:</strong> INTRODUCTION & PROBLEM STATEMENT
+                        </h3>
+                    </div>
+                    
+                    <div class="highlight-box" style="padding: 1.5rem; border-left: 5px solid var(--color-primary);">
+                        <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">
+                            <strong>SECTION 2:</strong> ALGORITHM & MECHANISM
+                        </h3>
+                    </div>
+                    
+                    <div class="highlight-box" style="padding: 1.5rem; border-left: 5px solid var(--color-primary);">
+                        <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">
+                            <strong>SECTION 3:</strong> COMPUTATION & IMPLEMENTATION
+                        </h3>
+                    </div>
+                    
+                    <div class="highlight-box" style="padding: 1.5rem; border-left: 5px solid var(--color-primary);">
+                        <h3 style="color: var(--color-primary); margin-bottom: 0.5rem;">
+                            <strong>SECTION 4:</strong> EXERCISES IN DETAIL
+                        </h3>
+                    </div>
+                </div>
             </div>
         `
     },
