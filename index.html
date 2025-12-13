@@ -1169,6 +1169,87 @@ a:focus-visible {
             overflow: hidden;
         }
 
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: white;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+            transform: translateX(-280px);
+            transition: transform 0.3s ease;
+            z-index: 1002;
+            overflow-y: auto;
+            padding: 1rem 0;
+        }
+        
+        .sidebar.open {
+            transform: translateX(0);
+        }
+        
+        .sidebar-toggle {
+            position: fixed;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 1rem 0.4rem;
+            cursor: pointer;
+            z-index: 1003;
+            border-radius: 0 8px 8px 0;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar.open + .sidebar-toggle {
+            left: 280px;
+        }
+        
+        .sidebar-toggle:hover {
+            background: var(--color-secondary);
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar-item {
+            padding: 0.6rem 1rem;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+            line-height: 1.3;
+        }
+        
+        .sidebar-item:hover {
+            background: #f5f5f5;
+            border-left-color: var(--color-secondary);
+        }
+        
+        .sidebar-item.active {
+            background: rgba(162, 0, 255, 0.08);
+            border-left-color: var(--color-primary);
+            font-weight: 600;
+        }
+        
+        .sidebar-item-number {
+            color: var(--color-primary);
+            font-weight: 700;
+            margin-right: 0.4rem;
+            font-size: 0.8rem;
+        }
+        
+        .sidebar-item-title {
+            color: var(--color-text);
+            font-size: 0.85rem;
+        }
+
         .slide {
             display: none;
             width: 100vw;
@@ -1342,6 +1423,12 @@ a:focus-visible {
     </style>
 </head>
 <body>
+    <div class="sidebar" id="sidebar">
+        <ul class="sidebar-menu" id="sidebarMenu"></ul>
+    </div>
+    
+    <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">☰</button>
+    
     <div class="presenter-badge" id="presenterBadge"></div>
     
     <div class="slide-counter">
@@ -1408,7 +1495,7 @@ const slides = [
     },
     
     {
-        title: "1.2 Motivation: Sparse Features",
+        title: "Motivation: Sparse Features",
         presenter: "T1",
         content: `
             <p>In many tasks such as <strong>natural language processing</strong>, data are often <strong>sparse</strong>: most values are zero and only a small subset of features are active. Models like <em>bag-of-words</em> and <em>one-hot encoding</em> may have tens of thousands of features, but each sample only activates a few.</p>
@@ -1417,7 +1504,7 @@ const slides = [
                 <strong>Example:</strong> A vocabulary of 10,000 words, but each document contains only ~50 words. That means <strong>99.5% of features = 0</strong> (sparse!)
             </div>
             
-            <h3>1.2.1 Global learning rate decay is not suitable</h3>
+            <h3>Global learning rate decay is not suitable</h3>
             
             <p>If using a decaying learning rate globally:</p>
             
@@ -1430,7 +1517,7 @@ const slides = [
     },
     
     {
-        title: "1.2.2 Example of Global Decay Calculation",
+        title: "Example of Global Decay Calculation",
         presenter: "T1",
         content: `
             <p><strong>Assume:</strong></p>
@@ -1457,7 +1544,7 @@ const slides = [
     },
     
     {
-        title: "1.3 Naive Solution and Its Limitations",
+        title: "Naive Solution and Its Limitations",
         presenter: "T1",
         content: `
             <p>A simple idea is to track how many times each feature appears.</p>
@@ -1470,7 +1557,7 @@ const slides = [
             
             <p>where $c > 0$ to avoid division by zero.</p>
             
-            <h3>1.3.1 Example of naive solution</h3>
+            <h3>Example of naive solution</h3>
             
             <p><strong>Assume:</strong></p>
             <ul>
@@ -1506,7 +1593,7 @@ const slides = [
     },
     
     {
-        title: "1.3.2 Limitations",
+        title: "Limitations",
         presenter: "T1",
         content: `
             <p><strong>Why this naive approach fails:</strong></p>
@@ -1529,10 +1616,10 @@ const slides = [
     },
     
     {
-        title: "2.1 AdaGrad Mechanism: Accumulated Squared Gradients",
+        title: "AdaGrad Mechanism: Accumulated Squared Gradients",
         presenter: "T2",
         content: `
-            <h3>2.1.1 From a Simple Counter to Squared Gradients</h3>
+            <h3>From a Simple Counter to Squared Gradients</h3>
             
             <p>Consider training a model where each parameter corresponds to a feature. Some features appear very often, others are rare.</p>
             
@@ -1562,7 +1649,7 @@ const slides = [
     },
     
     {
-        title: "2.1.2 Adaptive Learning Rate per Coordinate",
+        title: "Adaptive Learning Rate per Coordinate",
         presenter: "T2",
         content: `
             <p>Given the accumulated squared gradients $s(i, t)$, Adagrad defines a <strong>per-coordinate learning rate</strong>:</p>
@@ -1590,7 +1677,7 @@ const slides = [
     },
     
     {
-        title: "2.1.3 Analysis of the Update Rule",
+        title: "Analysis of the Update Rule",
         presenter: "T2",
         content: `
             <p><strong>1. No Need for Arbitrary Thresholds</strong></p>
@@ -1625,10 +1712,10 @@ const slides = [
     },
     
     {
-        title: "2.2 Adagrad and the Concept of Preconditioning",
+        title: "Adagrad and the Concept of Preconditioning",
         presenter: "T2",
         content: `
-            <h3>2.2.1 Quadratic Convex Optimization and Condition Number</h3>
+            <h3>Quadratic Convex Optimization and Condition Number</h3>
             
             <p>Consider a quadratic convex function:</p>
             <div class="math-block">
@@ -1651,7 +1738,7 @@ const slides = [
     },
     
     {
-        title: "2.2.2 Preconditioning: Changing Coordinates",
+        title: "Preconditioning: Changing Coordinates",
         presenter: "T2",
         content: `
             <p><strong>Preconditioning</strong> means applying a linear transformation to the variables to improve the condition number and make the optimization landscape "rounder".</p>
@@ -1675,7 +1762,7 @@ const slides = [
     },
     
     {
-        title: "2.2.3 Viewing Adagrad as Time-Varying Diagonal Preconditioning",
+        title: "Viewing Adagrad as Time-Varying Diagonal Preconditioning",
         presenter: "T2",
         content: `
             <p><strong>1. Vector Form of Adagrad</strong></p>
@@ -1718,10 +1805,10 @@ const slides = [
     },
     
     {
-        title: "2.3 Gradient as a Proxy for the Hessian",
+        title: "Gradient as a Proxy for the Hessian",
         presenter: "T2",
         content: `
-            <h3>2.3.1 Computing the Hessian Is Not Feasible in Deep Learning</h3>
+            <h3>Computing the Hessian Is Not Feasible in Deep Learning</h3>
             
             <p>The Hessian of a function $f: \\mathbb{R}^d \\rightarrow \\mathbb{R}$ is a $d \\times d$ matrix. In deep learning, the number of parameters $d$ is often millions or billions.</p>
             
@@ -1731,7 +1818,7 @@ const slides = [
                 So, in deep learning, one must use <strong>first-order information only</strong> (gradients), but still wants some of the benefits of second-order methods (which use the Hessian).
             </div>
             
-            <h3>2.3.2 The Clever Idea: Using Gradient Statistics as a Proxy</h3>
+            <h3>The Clever Idea: Using Gradient Statistics as a Proxy</h3>
             
             <p>For a quadratic function $f(x) = \\frac{1}{2} x^\\top Q x + c^\\top x + b$, the gradient is $g(x) = Qx + c$.</p>
             
@@ -1758,7 +1845,7 @@ const slides = [
     },
     
     {
-        title: "2.3.3 Adagrad in Deep Learning",
+        title: "Adagrad in Deep Learning",
         presenter: "T2",
         content: `
             <p>In deep learning contexts:</p>
@@ -1790,10 +1877,10 @@ const slides = [
     },
     
     {
-        title: "2.4 The Adagrad Algorithm",
+        title: "The Adagrad Algorithm",
         presenter: "T2",
         content: `
-            <h3>2.4.1 The Algorithm</h3>
+            <h3>The Algorithm</h3>
             
             <p>We use the variable $\\mathbf{s}_t$ to accumulate the variance of past gradients:</p>
             
@@ -1819,7 +1906,7 @@ const slides = [
     },
     
     {
-        title: "2.4.2 Explanation of Each Step",
+        title: "Explanation of Each Step",
         presenter: "T2",
         content: `
             <p><strong>Step 1: Compute gradient</strong></p>
@@ -1848,7 +1935,7 @@ const slides = [
     },
     
     {
-        title: "2.4.3 Design Principles",
+        title: "Design Principles",
         presenter: "T2",
         content: `
             <p><strong>1. Per-coordinate adaptation</strong></p>
@@ -1874,7 +1961,7 @@ const slides = [
     },
     
     {
-        title: "2.5 Applications of Adagrad",
+        title: "Applications of Adagrad",
         presenter: "T2",
         content: `
             <p>Adagrad is particularly effective in domains with <strong>sparse data</strong> or features with <strong>varying frequencies</strong>.</p>
@@ -1944,7 +2031,7 @@ const slides = [
     },
     
     {
-        title: "3.1 (continued): Steps 2 and Beyond",
+        title: "(continued): Steps 2 and Beyond",
         presenter: "T3",
         content: `
             <p><strong>Step 2 (t=2):</strong> Current: $(4.6, 2.6)$</p>
@@ -1967,7 +2054,7 @@ const slides = [
     },
     
     {
-        title: "3.2 Step-by-Step Calculation: Rotated Function",
+        title: "Step-by-Step Calculation: Rotated Function",
         presenter: "T3",
         content: `
             <p><strong>Objective Function:</strong> $f_2(\\mathbf{x}) = 0.1(x_1 + x_2)^2 + 2(x_1 - x_2)^2$</p>
@@ -2009,7 +2096,7 @@ const slides = [
     },
     
     {
-        title: "3.2 (continued): Steps 2 and Beyond",
+        title: "(continued): Steps 2 and Beyond",
         presenter: "T3",
         content: `
             <p><strong>Step 2 (t=2):</strong> Current: $(4.6, 3.4)$</p>
@@ -2031,7 +2118,7 @@ const slides = [
         `
     },
     {
-        title: "3.3 Why is Function 2 More Difficult for Adagrad?",
+        title: "Why is Function 2 More Difficult for Adagrad?",
         presenter: "T3",
         content: `
             <p><strong>1. The Root Cause: Coordinate System Mismatch</strong></p>
@@ -2069,7 +2156,7 @@ const slides = [
     },
     
     {
-        title: "3.4 Visualization: Adagrad Trajectory for Function 1",
+        title: "Visualization: Adagrad Trajectory for Function 1",
         presenter: "T4",
         content: `
             <p><strong>Comparing optimization paths for Function 1 with different learning rates:</strong></p>
@@ -2091,7 +2178,7 @@ const slides = [
         `
     },
     {
-        title: "3.5 Concise Implementation",
+        title: "Concise Implementation",
         presenter: "T4",
         content: `
             <h3>Using PyTorch's Built-in Adagrad Optimizer</h3>
@@ -2125,7 +2212,7 @@ print(f"Optimizer initialized: {optimizer}")</pre>
     },
     
     {
-        title: "3.5 (continued): Usage Example",
+        title: "(continued): Usage Example",
         presenter: "T4",
         content: `
             <p><strong>Training Loop Pattern:</strong></p>
@@ -2576,6 +2663,34 @@ optimizer = torch.optim.Adagrad(net.parameters(), lr=0.01)</pre>
 </script>
     <script>
         let currentSlideIndex = 0;
+        let sidebarOpen = false;
+        
+        function toggleSidebar() {
+            sidebarOpen = !sidebarOpen;
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open', sidebarOpen);
+        }
+        
+        function renderSidebar() {
+            const menu = document.getElementById('sidebarMenu');
+            menu.innerHTML = '';
+            
+            slides.forEach((slide, index) => {
+                const li = document.createElement('li');
+                li.className = 'sidebar-item' + (index === 0 ? ' active' : '');
+                li.innerHTML = `
+                    <span class="sidebar-item-number">${index + 1}.</span>
+                    <span class="sidebar-item-title">${slide.title || 'Untitled'}</span>
+                `;
+                li.onclick = () => {
+                    showSlide(index);
+                    if (window.innerWidth < 768) {
+                        toggleSidebar();
+                    }
+                };
+                menu.appendChild(li);
+            });
+        }
         
         function renderSlides() {
             const container = document.getElementById('slidesContainer');
@@ -2594,6 +2709,7 @@ optimizer = torch.optim.Adagrad(net.parameters(), lr=0.01)</pre>
             });
             
             document.getElementById('totalSlides').textContent = slides.length;
+            renderSidebar();
             updateNavigation();
             
             // Render math with KaTeX
@@ -2621,6 +2737,12 @@ optimizer = torch.optim.Adagrad(net.parameters(), lr=0.01)</pre>
             slideElements.forEach((slide, i) => {
                 slide.classList.toggle('active', i === index);
             });
+            
+            const sidebarItems = document.querySelectorAll('.sidebar-item');
+            sidebarItems.forEach((item, i) => {
+                item.classList.toggle('active', i === index);
+            });
+            
             currentSlideIndex = index;
             updateNavigation();
             

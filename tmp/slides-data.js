@@ -50,7 +50,7 @@ const slides = [
     },
     
     {
-        title: "1.2 Motivation: Sparse Features",
+        title: "Motivation: Sparse Features",
         presenter: "T1",
         content: `
             <p>In many tasks such as <strong>natural language processing</strong>, data are often <strong>sparse</strong>: most values are zero and only a small subset of features are active. Models like <em>bag-of-words</em> and <em>one-hot encoding</em> may have tens of thousands of features, but each sample only activates a few.</p>
@@ -59,7 +59,7 @@ const slides = [
                 <strong>Example:</strong> A vocabulary of 10,000 words, but each document contains only ~50 words. That means <strong>99.5% of features = 0</strong> (sparse!)
             </div>
             
-            <h3>1.2.1 Global learning rate decay is not suitable</h3>
+            <h3>Global learning rate decay is not suitable</h3>
             
             <p>If using a decaying learning rate globally:</p>
             
@@ -72,7 +72,7 @@ const slides = [
     },
     
     {
-        title: "1.2.2 Example of Global Decay Calculation",
+        title: "Example of Global Decay Calculation",
         presenter: "T1",
         content: `
             <p><strong>Assume:</strong></p>
@@ -99,7 +99,7 @@ const slides = [
     },
     
     {
-        title: "1.3 Naive Solution and Its Limitations",
+        title: "Naive Solution and Its Limitations",
         presenter: "T1",
         content: `
             <p>A simple idea is to track how many times each feature appears.</p>
@@ -112,7 +112,7 @@ const slides = [
             
             <p>where $c > 0$ to avoid division by zero.</p>
             
-            <h3>1.3.1 Example of naive solution</h3>
+            <h3>Example of naive solution</h3>
             
             <p><strong>Assume:</strong></p>
             <ul>
@@ -148,7 +148,7 @@ const slides = [
     },
     
     {
-        title: "1.3.2 Limitations",
+        title: "Limitations",
         presenter: "T1",
         content: `
             <p><strong>Why this naive approach fails:</strong></p>
@@ -171,10 +171,10 @@ const slides = [
     },
     
     {
-        title: "2.1 AdaGrad Mechanism: Accumulated Squared Gradients",
+        title: "AdaGrad Mechanism: Accumulated Squared Gradients",
         presenter: "T2",
         content: `
-            <h3>2.1.1 From a Simple Counter to Squared Gradients</h3>
+            <h3>From a Simple Counter to Squared Gradients</h3>
             
             <p>Consider training a model where each parameter corresponds to a feature. Some features appear very often, others are rare.</p>
             
@@ -204,7 +204,7 @@ const slides = [
     },
     
     {
-        title: "2.1.2 Adaptive Learning Rate per Coordinate",
+        title: "Adaptive Learning Rate per Coordinate",
         presenter: "T2",
         content: `
             <p>Given the accumulated squared gradients $s(i, t)$, Adagrad defines a <strong>per-coordinate learning rate</strong>:</p>
@@ -232,7 +232,7 @@ const slides = [
     },
     
     {
-        title: "2.1.3 Analysis of the Update Rule",
+        title: "Analysis of the Update Rule",
         presenter: "T2",
         content: `
             <p><strong>1. No Need for Arbitrary Thresholds</strong></p>
@@ -267,10 +267,10 @@ const slides = [
     },
     
     {
-        title: "2.2 Adagrad and the Concept of Preconditioning",
+        title: "Adagrad and the Concept of Preconditioning",
         presenter: "T2",
         content: `
-            <h3>2.2.1 Quadratic Convex Optimization and Condition Number</h3>
+            <h3>Quadratic Convex Optimization and Condition Number</h3>
             
             <p>Consider a quadratic convex function:</p>
             <div class="math-block">
@@ -293,7 +293,7 @@ const slides = [
     },
     
     {
-        title: "2.2.2 Preconditioning: Changing Coordinates",
+        title: "Preconditioning: Changing Coordinates",
         presenter: "T2",
         content: `
             <p><strong>Preconditioning</strong> means applying a linear transformation to the variables to improve the condition number and make the optimization landscape "rounder".</p>
@@ -317,7 +317,7 @@ const slides = [
     },
     
     {
-        title: "2.2.3 Viewing Adagrad as Time-Varying Diagonal Preconditioning",
+        title: "Viewing Adagrad as Time-Varying Diagonal Preconditioning",
         presenter: "T2",
         content: `
             <p><strong>1. Vector Form of Adagrad</strong></p>
@@ -360,10 +360,10 @@ const slides = [
     },
     
     {
-        title: "2.3 Gradient as a Proxy for the Hessian",
+        title: "Gradient as a Proxy for the Hessian",
         presenter: "T2",
         content: `
-            <h3>2.3.1 Computing the Hessian Is Not Feasible in Deep Learning</h3>
+            <h3>Computing the Hessian Is Not Feasible in Deep Learning</h3>
             
             <p>The Hessian of a function $f: \\mathbb{R}^d \\rightarrow \\mathbb{R}$ is a $d \\times d$ matrix. In deep learning, the number of parameters $d$ is often millions or billions.</p>
             
@@ -373,7 +373,7 @@ const slides = [
                 So, in deep learning, one must use <strong>first-order information only</strong> (gradients), but still wants some of the benefits of second-order methods (which use the Hessian).
             </div>
             
-            <h3>2.3.2 The Clever Idea: Using Gradient Statistics as a Proxy</h3>
+            <h3>The Clever Idea: Using Gradient Statistics as a Proxy</h3>
             
             <p>For a quadratic function $f(x) = \\frac{1}{2} x^\\top Q x + c^\\top x + b$, the gradient is $g(x) = Qx + c$.</p>
             
@@ -400,7 +400,7 @@ const slides = [
     },
     
     {
-        title: "2.3.3 Adagrad in Deep Learning",
+        title: "Adagrad in Deep Learning",
         presenter: "T2",
         content: `
             <p>In deep learning contexts:</p>
@@ -432,10 +432,10 @@ const slides = [
     },
     
     {
-        title: "2.4 The Adagrad Algorithm",
+        title: "The Adagrad Algorithm",
         presenter: "T2",
         content: `
-            <h3>2.4.1 The Algorithm</h3>
+            <h3>The Algorithm</h3>
             
             <p>We use the variable $\\mathbf{s}_t$ to accumulate the variance of past gradients:</p>
             
@@ -461,7 +461,7 @@ const slides = [
     },
     
     {
-        title: "2.4.2 Explanation of Each Step",
+        title: "Explanation of Each Step",
         presenter: "T2",
         content: `
             <p><strong>Step 1: Compute gradient</strong></p>
@@ -490,7 +490,7 @@ const slides = [
     },
     
     {
-        title: "2.4.3 Design Principles",
+        title: "Design Principles",
         presenter: "T2",
         content: `
             <p><strong>1. Per-coordinate adaptation</strong></p>
@@ -516,7 +516,7 @@ const slides = [
     },
     
     {
-        title: "2.5 Applications of Adagrad",
+        title: "Applications of Adagrad",
         presenter: "T2",
         content: `
             <p>Adagrad is particularly effective in domains with <strong>sparse data</strong> or features with <strong>varying frequencies</strong>.</p>
@@ -586,7 +586,7 @@ const slides = [
     },
     
     {
-        title: "3.1 (continued): Steps 2 and Beyond",
+        title: "(continued): Steps 2 and Beyond",
         presenter: "T3",
         content: `
             <p><strong>Step 2 (t=2):</strong> Current: $(4.6, 2.6)$</p>
@@ -609,7 +609,7 @@ const slides = [
     },
     
     {
-        title: "3.2 Step-by-Step Calculation: Rotated Function",
+        title: "Step-by-Step Calculation: Rotated Function",
         presenter: "T3",
         content: `
             <p><strong>Objective Function:</strong> $f_2(\\mathbf{x}) = 0.1(x_1 + x_2)^2 + 2(x_1 - x_2)^2$</p>
@@ -651,7 +651,7 @@ const slides = [
     },
     
     {
-        title: "3.2 (continued): Steps 2 and Beyond",
+        title: "(continued): Steps 2 and Beyond",
         presenter: "T3",
         content: `
             <p><strong>Step 2 (t=2):</strong> Current: $(4.6, 3.4)$</p>
@@ -673,7 +673,7 @@ const slides = [
         `
     },
     {
-        title: "3.3 Why is Function 2 More Difficult for Adagrad?",
+        title: "Why is Function 2 More Difficult for Adagrad?",
         presenter: "T3",
         content: `
             <p><strong>1. The Root Cause: Coordinate System Mismatch</strong></p>
@@ -711,7 +711,7 @@ const slides = [
     },
     
     {
-        title: "3.4 Visualization: Adagrad Trajectory for Function 1",
+        title: "Visualization: Adagrad Trajectory for Function 1",
         presenter: "T4",
         content: `
             <p><strong>Comparing optimization paths for Function 1 with different learning rates:</strong></p>
@@ -733,7 +733,7 @@ const slides = [
         `
     },
     {
-        title: "3.5 Concise Implementation",
+        title: "Concise Implementation",
         presenter: "T4",
         content: `
             <h3>Using PyTorch's Built-in Adagrad Optimizer</h3>
@@ -767,7 +767,7 @@ print(f"Optimizer initialized: {optimizer}")</pre>
     },
     
     {
-        title: "3.5 (continued): Usage Example",
+        title: "(continued): Usage Example",
         presenter: "T4",
         content: `
             <p><strong>Training Loop Pattern:</strong></p>
