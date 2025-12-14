@@ -20,7 +20,6 @@ AdaGrad sử dụng biến $\mathbf{s}_t$ để **tích lũy phương sai của 
 **Bước 1 - Tính gradient:**
 $$\mathbf{g}_t = \partial_{\mathbf{w}} l(y_t, f(\mathbf{x}_t, \mathbf{w}))$$
 
-Gradient tại điểm hiện tại cho biết hướng thay đổi mạnh nhất của hàm mất mát.
 
 **Bước 2 - Tích lũy bình phương gradient:**
 $$\mathbf{s}_t = \mathbf{s}_{t-1} + \mathbf{g}_t^2$$
@@ -106,7 +105,7 @@ Các bạn chú ý là gradient theo hướng $x_2$ **lớn hơn rất nhiều**
 **b. Cập nhật bộ tích lũy $\mathbf{s}$:**
 $$\mathbf{s}_1 = \mathbf{s}_0 + \mathbf{g}_1^2 = [0, 0] + [1.0^2, 12.0^2] = [1.0, 144.0]$$
 
-**c. Tính learning rate hiệu dụng:**
+**c. Tính learning rate**
 $$\eta_{1,1} = \frac{0.4}{\sqrt{1.0 + 10^{-8}}} \approx 0.4$$
 $$\eta_{2,1} = \frac{0.4}{\sqrt{144.0 + 10^{-8}}} \approx 0.0333$$
 
@@ -137,20 +136,18 @@ $$f_1(4.6, 2.6) = 0.1(4.6)^2 + 2(2.6)^2 = 2.116 + 13.52 = 15.636$$
 
 Khi các vòng lặp tiến triển, bộ tích lũy bình phương gradient $\mathbf{s}_t$ ngày càng lớn, khiến learning rate hiệu dụng giảm dần. Tọa độ $x_2$ có gradient lớn hơn nhiều, nên learning rate của nó giảm nhanh hơn $x_1$.
 
-**Nhận xét về Hàm 1:**
-1. Learning rate hiệu dụng **thích ứng theo từng tọa độ** một cách hoàn hảo
-2. Hội tụ **cân bằng** và mượt mà về điểm $(0,0)$
-3. Vì hai biến độc lập, việc scale diagonal của AdaGrad là **lý tưởng**
+**Em xin Nhận xét về Hàm 1:**
+Vì hai biến độc lập, việc scale diagonal của AdaGrad là **lý tưởng**
 
 ---
 
 ### Slide: Step-by-Step Calculation: Rotated Function
 
-Bây giờ chúng ta xem xét hàm số thứ hai có cấu trúc phức tạp hơn:
+Bây giờ chúng ta xem xét hàm số thứ hai có cấu trúc phức tạp hơn như trên slide:
 
 **Hàm mục tiêu:** $f_2(\mathbf{x}) = 0.1(x_1 + x_2)^2 + 2(x_1 - x_2)^2$
 
-Đây là một **paraboloid elliptic xoay** - các biến **tương quan chặt chẽ**. Khi khai triển:
+Khi khai triển ra được:
 $$f_2(\mathbf{x}) = 2.1x_1^2 - 3.8x_1x_2 + 2.1x_2^2$$
 
 Khác biệt quan trọng: có **hạng tử chéo $x_1x_2$**. Hàm này cũng có cực tiểu tại $(0, 0)$.
@@ -168,7 +165,7 @@ $$= [21.0 - 11.4, -19.0 + 12.6] = [9.6, -6.4]$$
 **b. Cập nhật bộ tích lũy:**
 $$\mathbf{s}_1 = [0, 0] + [9.6^2, (-6.4)^2] = [92.16, 40.96]$$
 
-**c. Learning rate hiệu dụng:**
+**c. Learning rate**
 $$\eta_{1,1} = \frac{0.4}{\sqrt{92.16 + 10^{-8}}} \approx 0.0417$$
 $$\eta_{2,1} = \frac{0.4}{\sqrt{40.96 + 10^{-8}}} \approx 0.0625$$
 
@@ -207,7 +204,7 @@ Hàm 2: $f_2(\mathbf{x}) = 2.1x_1^2 - 3.8x_1x_2 + 2.1x_2^2$
 
 Vấn đề chính là **hạng tử chéo $-3.8x_1x_2$**. Điều này tạo ra sự **liên kết** giữa $x_1$ và $x_2$ - không thể tối ưu một tọa độ độc lập với tọa độ kia.
 
-**2. Hiểu qua Ma trận Hessian**
+**2. Nếu để dùng Ma trận Hessian để hiểu **
 
 **Hàm 1 (Axis-aligned):**
 $$H_1 = \begin{bmatrix} 0.2 & 0 \\ 0 & 4 \end{bmatrix}$$
@@ -227,7 +224,6 @@ $$D_t = \text{diag}\left(\frac{1}{\sqrt{s_1}}, \frac{1}{\sqrt{s_2}}\right)$$
 - Với Hàm 1: Ma trận chéo khớp hoàn hảo với Hessian chéo
 - Với Hàm 2: Không thể nắm bắt cấu trúc không chéo
 
-**Insight quan trọng:** AdaGrad là **diagonal optimizer** - chỉ có thể thích ứng learning rate dọc theo các trục tọa độ một cách độc lập. Hoàn hảo khi hình học bài toán thẳng hàng với trục tọa độ (Hessian chéo), nhưng dưới tối ưu khi bài toán có cấu trúc xoay/tương quan (Hessian không chéo).
 
 ---
 
