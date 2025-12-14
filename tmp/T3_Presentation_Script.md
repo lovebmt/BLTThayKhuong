@@ -134,10 +134,14 @@ $$f_1(4.6, 2.6) = 0.1(4.6)^2 + 2(2.6)^2 = 2.116 + 13.52 = 15.636$$
 
 **Quan sát quan trọng:**
 
-Khi các vòng lặp tiến triển, bộ tích lũy bình phương gradient $\mathbf{s}_t$ ngày càng lớn, khiến learning rate hiệu dụng giảm dần. Tọa độ $x_2$ có gradient lớn hơn nhiều, nên learning rate của nó giảm nhanh hơn $x_1$.
+Khi các vòng lặp tiến triển, bộ tích lũy bình phương gradient $\mathbf{s}_t$ ngày càng lớn, khiến learning rate giảm dần. Tọa độ $x_2$ có gradient lớn hơn nhiều, nên learning rate của nó giảm nhanh hơn $x_1$.
 
-**Em xin Nhận xét về Hàm 1:**
 Vì hai biến độc lập, việc scale diagonal của AdaGrad là **lý tưởng**
+
+**Khi nào dừng tính?** Trong thực tế, chúng ta dừng khi:
+- Gradient đủ nhỏ: $\|\mathbf{g}_t\| < \text{threshold}$, hoặc
+- Đạt số vòng lặp tối đa, hoặc  
+- Hàm mục tiêu không giảm đáng kể giữa các bước
 
 ---
 
